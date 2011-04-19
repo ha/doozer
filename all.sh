@@ -24,11 +24,3 @@ make install
 for cmd in $CMDS
 do (mk cmd/$cmd make install)
 done
-
-echo
-echo "--- TESTING"
-
-gotest
-for cmd in $CMDS
-do (mk cmd/$cmd gotest)
-done
