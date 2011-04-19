@@ -1,0 +1,3 @@
+CMDS="
+    doozer
+"
