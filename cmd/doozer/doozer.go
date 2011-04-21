@@ -12,6 +12,7 @@ import (
 
 var (
 	addr        = flag.String("a", "127.0.0.1:8046", "the address to bind to")
+	rrev        = flag.Int64("r", -1, "request rev")
 	showHelp    = flag.Bool("h", false, "show help")
 	showVersion = flag.Bool("v", false, "print version string")
 )

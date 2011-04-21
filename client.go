@@ -34,6 +34,7 @@ var (
 	set    = NewRequest_Verb(Request_SET)
 	walk   = NewRequest_Verb(Request_WALK)
 	watch  = NewRequest_Verb(Request_WATCH)
+	wait   = NewRequest_Verb(Request_WAIT)
 	stat   = NewRequest_Verb(Request_STAT)
 	getdir = NewRequest_Verb(Request_GETDIR)
 )
@@ -608,6 +609,20 @@ func (cl *Client) Get(path string, rev *int64) ([]byte, int64, os.Error) {
 }
 
 
+func (cl *Client) Wait(glob string, from int64) (ev Event, err os.Error) {
+	var r *R
+	r, err = cl.retry(&T{Verb: watch, Path: &glob, Rev: &from})
+	if err != nil {
+		return
+	}
+	ev.Rev = *r.Rev
+	ev.Path = *r.Path
+	ev.Body = r.Value
+	ev.Flag = *r.Flags & (Set | Del)
+	return
+}
+
+
 func (cl *Client) Rev() (int64, os.Error) {
 	r, err := cl.retry(&T{Verb: rev})
 	if err != nil {
@@ -646,6 +661,7 @@ func (cl *Client) Watch(glob string, from int64) (*Watch, os.Error) {
 
 	return c.events(&T{Verb: watch, Path: &glob, Rev: &from})
 }
+
 
 func (cl *Client) Getdir(path string, offset, limit int32, rev *int64) (*Watch, os.Error) {
 	c := <-cl.c

@@ -1,6 +1,6 @@
 include ../../Make.inc
 
-VERSION ?= $(shell ../ver.sh)
+VERSION ?= $(shell ../../ver.sh)
 
 TARG=doozer
 GOFILES=\
@@ -14,6 +14,7 @@ GOFILES=\
 	set.go\
 	stat.go\
 	vers.go\
+	wait.go\
 	walk.go\
 	watch.go\
 	find.go\

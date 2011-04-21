@@ -21,6 +21,7 @@ const (
 	Request_DEL    = 3
 	Request_ESET   = 4
 	Request_REV    = 5
+	Request_WAIT   = 6
 	Request_NOP    = 7
 	Request_WATCH  = 8
 	Request_WALK   = 9
@@ -35,6 +36,7 @@ var Request_Verb_name = map[int32]string{
 	3:  "DEL",
 	4:  "ESET",
 	5:  "REV",
+	6:  "WAIT",
 	7:  "NOP",
 	8:  "WATCH",
 	9:  "WALK",
@@ -48,6 +50,7 @@ var Request_Verb_value = map[string]int32{
 	"DEL":    3,
 	"ESET":   4,
 	"REV":    5,
+	"WAIT":   6,
 	"NOP":    7,
 	"WATCH":  8,
 	"WALK":   9,
