@@ -663,7 +663,6 @@ func (cl *Client) Getdir(dir string, rev *int64, off, lim int) (names []string, 
 			Verb:   getdir,
 			Rev:    rev,
 			Path:   &dir,
-			Limit:  pb.Int32(1),
 			Offset: pb.Int32(int32(off)),
 		})
 		switch err {
@@ -690,7 +689,6 @@ func (cl *Client) Walk(glob string, rev *int64, off, lim int) (info []Event, err
 			Verb:   walk,
 			Rev:    rev,
 			Path:   &glob,
-			Limit:  pb.Int32(1),
 			Offset: pb.Int32(int32(off)),
 		})
 		switch err {
