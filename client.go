@@ -611,7 +611,7 @@ func (cl *Client) Get(path string, rev *int64) ([]byte, int64, os.Error) {
 
 func (cl *Client) Wait(glob string, from int64) (ev Event, err os.Error) {
 	var r *R
-	r, err = cl.retry(&T{Verb: watch, Path: &glob, Rev: &from})
+	r, err = cl.retry(&T{Verb: wait, Path: &glob, Rev: &from})
 	if err != nil {
 		return
 	}
