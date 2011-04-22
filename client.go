@@ -655,7 +655,7 @@ func (cl *Client) Nop() os.Error {
 
 // Getdir reads up to lim names from dir, at revision *rev, into an array.
 // Names are read in lexicographical order, starting at position off.
-// A netative lim means to read until the end.
+// A negative lim means to read until the end.
 func (cl *Client) Getdir(dir string, rev *int64, off, lim int) (names []string, err os.Error) {
 	for lim != 0 {
 		r, err := cl.retry(&T{
@@ -682,7 +682,7 @@ func (cl *Client) Getdir(dir string, rev *int64, off, lim int) (names []string, 
 
 // Walk reads up to lim entries matching glob, in revision *rev, into an array.
 // Entries are read in lexicographical order, starting at position off.
-// A netative lim means to read until the end.
+// A negative lim means to read until the end.
 func (cl *Client) Walk(glob string, rev *int64, off, lim int) (info []Event, err os.Error) {
 	for lim != 0 {
 		r, err := cl.retry(&T{
