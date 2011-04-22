@@ -28,7 +28,7 @@ func stat(path string) {
 	switch rev {
 	case 0:
 		fmt.Fprintln(os.Stderr, "No such file or directory:", path)
-		os.Exit(doozer.Response_NOENT)
+		os.Exit(2)
 	case -2:
 		fmt.Println("d", len)
 	default:

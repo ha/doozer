@@ -26,17 +26,17 @@ var (
 )
 
 var (
-	cancel = NewRequest_Verb(Request_CANCEL)
-	del    = NewRequest_Verb(Request_DEL)
-	get    = NewRequest_Verb(Request_GET)
-	nop    = NewRequest_Verb(Request_NOP)
-	rev    = NewRequest_Verb(Request_REV)
-	set    = NewRequest_Verb(Request_SET)
-	walk   = NewRequest_Verb(Request_WALK)
-	watch  = NewRequest_Verb(Request_WATCH)
-	wait   = NewRequest_Verb(Request_WAIT)
-	stat   = NewRequest_Verb(Request_STAT)
-	getdir = NewRequest_Verb(Request_GETDIR)
+	cancel = newRequest_Verb(request_CANCEL)
+	del    = newRequest_Verb(request_DEL)
+	get    = newRequest_Verb(request_GET)
+	nop    = newRequest_Verb(request_NOP)
+	rev    = newRequest_Verb(request_REV)
+	set    = newRequest_Verb(request_SET)
+	walk   = newRequest_Verb(request_WALK)
+	watch  = newRequest_Verb(request_WATCH)
+	wait   = newRequest_Verb(request_WAIT)
+	stat   = newRequest_Verb(request_STAT)
+	getdir = newRequest_Verb(request_GETDIR)
 )
 
 
@@ -47,7 +47,7 @@ type Error struct {
 
 
 func (r *Error) String() (s string) {
-	s = "response: " + Response_Err_name[r.Code]
+	s = "response: " + response_Err_name[r.Code]
 	if r.Detail != "" {
 		s += ": " + r.Detail
 	}
@@ -56,12 +56,12 @@ func (r *Error) String() (s string) {
 
 
 var errs = map[int32]os.Error{
-	Response_NOTDIR:       os.ENOTDIR,
-	Response_ISDIR:        os.EISDIR,
-	Response_NOENT:        os.ENOENT,
-	Response_RANGE:        os.ERANGE,
-	Response_REV_MISMATCH: ErrOldRev,
-	Response_TOO_LATE:     os.NewError("too late"),
+	response_NOTDIR:       os.ENOTDIR,
+	response_ISDIR:        os.EISDIR,
+	response_NOENT:        os.ENOENT,
+	response_RANGE:        os.ERANGE,
+	response_REV_MISMATCH: ErrOldRev,
+	response_TOO_LATE:     os.NewError("too late"),
 }
 
 
@@ -84,9 +84,9 @@ func (e Event) IsDel() bool {
 }
 
 
-type T Request
+type T request
 
-type R Response
+type R response
 
 
 func (r *R) err() os.Error {
@@ -290,7 +290,7 @@ func (c *conn) readResponses() {
 			return
 		}
 
-		if r.ErrCode != nil && *r.ErrCode == Response_REDIRECT {
+		if r.ErrCode != nil && *r.ErrCode == response_REDIRECT {
 			c.redirectAddr = pb.GetString(r.ErrDetail)
 			c.redirected = true
 		}
