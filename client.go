@@ -212,14 +212,14 @@ func (c *conn) call(t *T) (*R, os.Error) {
 }
 
 
-func (c *conn) events(t *T) (*Watch, os.Error) {
+func (c *conn) events(t *T) (*stream, os.Error) {
 	cb, err := c.send(t)
 	if err != nil {
 		return nil, err
 	}
 
 	evs := make(chan *Event)
-	w := &Watch{evs, c, cb, *t.Tag}
+	w := &stream{evs, c, cb, *t.Tag}
 	go func() {
 		for r := range cb {
 			var ev Event
@@ -653,49 +653,63 @@ func (cl *Client) Nop() os.Error {
 }
 
 
-func (cl *Client) Watch(glob string, from int64) (*Watch, os.Error) {
-	c := <-cl.c
-	if c == nil {
-		return nil, ErrNoAddrs
+// Getdir reads up to lim names from dir, at revision *rev, into an array.
+// Names are read in lexicographical order, starting at position off.
+// A netative lim means to read until the end.
+func (cl *Client) Getdir(dir string, rev *int64, off, lim int) (names []string, err os.Error) {
+	for lim != 0 {
+		r, err := cl.retry(&T{
+			Verb:   getdir,
+			Rev:    rev,
+			Path:   &dir,
+			Limit:  pb.Int32(1),
+			Offset: pb.Int32(int32(off)),
+		})
+		switch err {
+		case os.EOF:
+			goto done
+		case nil:
+			names = append(names, *r.Path)
+			off++
+			lim--
+		default:
+			return nil, err
+		}
 	}
-
-	return c.events(&T{Verb: watch, Path: &glob, Rev: &from})
+done:
+	return names, nil
 }
 
 
-func (cl *Client) Getdir(path string, offset, limit int32, rev *int64) (*Watch, os.Error) {
-	c := <-cl.c
-	if c == nil {
-		return nil, ErrNoAddrs
+// Walk reads up to lim entries matching glob, in revision *rev, into an array.
+// Entries are read in lexicographical order, starting at position off.
+// A netative lim means to read until the end.
+func (cl *Client) Walk(glob string, rev *int64, off, lim int) (info []Event, err os.Error) {
+	for lim != 0 {
+		r, err := cl.retry(&T{
+			Verb:   walk,
+			Rev:    rev,
+			Path:   &glob,
+			Limit:  pb.Int32(1),
+			Offset: pb.Int32(int32(off)),
+		})
+		switch err {
+		case os.EOF:
+			goto done
+		case nil:
+			info = append(info, Event{*r.Rev, *r.Path, r.Value, *r.Flags, nil})
+			off++
+			lim--
+		default:
+			return nil, err
+		}
 	}
-
-	var t T
-	t.Verb = getdir
-	t.Rev = rev
-	t.Path = &path
-	t.Offset = &offset
-	t.Limit = &limit
-
-	return c.events(&t)
-}
-
-func (cl *Client) Walk(glob string, rev *int64, offset, limit *int32) (*Watch, os.Error) {
-	c := <-cl.c
-	if c == nil {
-		return nil, ErrNoAddrs
-	}
-
-	return c.events(&T{
-		Verb:   walk,
-		Path:   &glob,
-		Rev:    rev,
-		Offset: offset,
-		Limit:  limit,
-	})
+done:
+	return info, nil
 }
 
 
-type Watch struct {
+type stream struct {
 	C   <-chan *Event // to caller
 	c   *conn
 	cb  chan *R
@@ -703,6 +717,6 @@ type Watch struct {
 }
 
 
-func (w *Watch) Cancel() os.Error {
+func (w *stream) Cancel() os.Error {
 	return w.c.cancel(w.tag, w.cb)
 }

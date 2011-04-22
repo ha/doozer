@@ -31,12 +31,20 @@ line-feed char.
 func walk(glob string) {
 	c := doozer.New("<test>", *addr)
 
-	w, err := c.Walk(glob, nil, nil, nil)
+	var err os.Error
+	if *rrev == -1 {
+		*rrev, err = c.Rev()
+		if err != nil {
+			bail(err)
+		}
+	}
+
+	info, err := c.Walk(glob, rrev, 0, -1)
 	if err != nil {
 		bail(err)
 	}
 
-	for ev := range w.C {
+	for _, ev := range info {
 		if ev.Err != nil {
 			fmt.Fprintln(os.Stderr, ev.Err)
 		}
