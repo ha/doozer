@@ -75,6 +75,7 @@ const (
 	Response_REV_MISMATCH = 5
 	Response_BAD_PATH     = 6
 	Response_MISSING_ARG  = 7
+	Response_RANGE        = 8
 	Response_NOTDIR       = 20
 	Response_ISDIR        = 21
 	Response_NOENT        = 22
@@ -89,6 +90,7 @@ var Response_Err_name = map[int32]string{
 	5:   "REV_MISMATCH",
 	6:   "BAD_PATH",
 	7:   "MISSING_ARG",
+	8:   "RANGE",
 	20:  "NOTDIR",
 	21:  "ISDIR",
 	22:  "NOENT",
@@ -102,6 +104,7 @@ var Response_Err_value = map[string]int32{
 	"REV_MISMATCH": 5,
 	"BAD_PATH":     6,
 	"MISSING_ARG":  7,
+	"RANGE":        8,
 	"NOTDIR":       20,
 	"ISDIR":        21,
 	"NOENT":        22,

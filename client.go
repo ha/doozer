@@ -59,6 +59,7 @@ var errs = map[int32]os.Error{
 	Response_NOTDIR:       os.ENOTDIR,
 	Response_ISDIR:        os.EISDIR,
 	Response_NOENT:        os.ENOENT,
+	Response_RANGE:        os.ERANGE,
 	Response_REV_MISMATCH: ErrOldRev,
 	Response_TOO_LATE:     os.NewError("too late"),
 }
@@ -666,7 +667,7 @@ func (cl *Client) Getdir(dir string, rev *int64, off, lim int) (names []string, 
 			Offset: pb.Int32(int32(off)),
 		})
 		switch err {
-		case os.EOF:
+		case os.EOF, os.ERANGE:
 			return names, nil
 		case nil:
 			names = append(names, *r.Path)
@@ -693,7 +694,7 @@ func (cl *Client) Walk(glob string, rev *int64, off, lim int) (info []Event, err
 			Offset: pb.Int32(int32(off)),
 		})
 		switch err {
-		case os.EOF:
+		case os.EOF, os.ERANGE:
 			return info, nil
 		case nil:
 			info = append(info, Event{*r.Rev, *r.Path, r.Value, *r.Flags, nil})
