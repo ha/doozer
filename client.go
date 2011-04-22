@@ -667,7 +667,7 @@ func (cl *Client) Getdir(dir string, rev *int64, off, lim int) (names []string, 
 		})
 		switch err {
 		case os.EOF:
-			goto done
+			return names, nil
 		case nil:
 			names = append(names, *r.Path)
 			off++
@@ -676,8 +676,7 @@ func (cl *Client) Getdir(dir string, rev *int64, off, lim int) (names []string, 
 			return nil, err
 		}
 	}
-done:
-	return names, nil
+	return
 }
 
 
@@ -695,7 +694,7 @@ func (cl *Client) Walk(glob string, rev *int64, off, lim int) (info []Event, err
 		})
 		switch err {
 		case os.EOF:
-			goto done
+			return info, nil
 		case nil:
 			info = append(info, Event{*r.Rev, *r.Path, r.Value, *r.Flags, nil})
 			off++
@@ -704,8 +703,7 @@ func (cl *Client) Walk(glob string, rev *int64, off, lim int) (info []Event, err
 			return nil, err
 		}
 	}
-done:
-	return info, nil
+	return
 }
 
 
