@@ -33,9 +33,11 @@ If a file is deleted, <rev> will be 0.
 
 
 func wait(path string) {
-	c := doozer.New("", *addr)
+	c, err := doozer.Dial(*addr)
+	if err != nil {
+		bail(err)
+	}
 
-	var err os.Error
 	if *rrev == -1 {
 		*rrev, err = c.Rev()
 		if err != nil {
@@ -49,10 +51,10 @@ func wait(path string) {
 	}
 
 	var sd string
-	switch ev.Flag {
-	case doozer.Set:
+	switch {
+	case ev.IsSet():
 		sd = "set"
-	case doozer.Del:
+	case ev.IsDel():
 		sd = "del"
 	}
 	fmt.Println(ev.Path, ev.Rev, sd, len(ev.Body))

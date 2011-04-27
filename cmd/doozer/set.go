@@ -23,7 +23,10 @@ Prints the new revision on stdout, or an error message on stderr.
 func set(path, rev string) {
 	oldRev := mustAtoi64(rev)
 
-	c := doozer.New("<test>", *addr)
+	c, err := doozer.Dial(*addr)
+	if err != nil {
+		bail(err)
+	}
 
 	body, err := ioutil.ReadAll(os.Stdin)
 	if err != nil {

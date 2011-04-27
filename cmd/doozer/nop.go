@@ -15,9 +15,12 @@ No change will be made to the data store.
 
 
 func nop() {
-	c := doozer.New("<test>", *addr)
+	c, err := doozer.Dial(*addr)
+	if err != nil {
+		bail(err)
+	}
 
-	err := c.Nop()
+	err = c.Nop()
 	if err != nil {
 		bail(err)
 	}

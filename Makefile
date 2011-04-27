@@ -2,7 +2,9 @@ include Make.inc
 
 TARG=github.com/ha/doozer
 GOFILES=\
-	client.go\
+	conn.go\
+	err.go\
+	event.go\
 	msg.pb.go\
 
 include $(GOROOT)/src/Make.pkg

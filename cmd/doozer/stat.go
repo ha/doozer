@@ -18,7 +18,10 @@ Otherwise, prints its revision and length.
 
 
 func stat(path string) {
-	c := doozer.New("<test>", *addr)
+	c, err := doozer.Dial(*addr)
+	if err != nil {
+		bail(err)
+	}
 
 	len, rev, err := c.Stat(path, nil)
 	if err != nil {

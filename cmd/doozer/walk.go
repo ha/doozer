@@ -29,9 +29,11 @@ line-feed char.
 
 
 func walk(glob string) {
-	c := doozer.New("<test>", *addr)
+	c, err := doozer.Dial(*addr)
+	if err != nil {
+		bail(err)
+	}
 
-	var err os.Error
 	if *rrev == -1 {
 		*rrev, err = c.Rev()
 		if err != nil {
@@ -39,16 +41,12 @@ func walk(glob string) {
 		}
 	}
 
-	info, err := c.Walk(glob, rrev, 0, -1)
+	info, err := c.Walk(glob, *rrev, 0, -1)
 	if err != nil {
 		bail(err)
 	}
 
 	for _, ev := range info {
-		if ev.Err != nil {
-			fmt.Fprintln(os.Stderr, ev.Err)
-		}
-
 		fmt.Println(ev.Path, ev.Rev, len(ev.Body))
 		os.Stdout.Write(ev.Body)
 		fmt.Println()

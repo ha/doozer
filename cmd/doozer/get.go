@@ -13,7 +13,10 @@ func init() {
 
 
 func get(path string) {
-	c := doozer.New("<test>", *addr)
+	c, err := doozer.Dial(*addr)
+	if err != nil {
+		bail(err)
+	}
 
 	body, _, err := c.Get(path, nil)
 	if err != nil {

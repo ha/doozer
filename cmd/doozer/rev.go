@@ -13,7 +13,10 @@ func init() {
 
 
 func rev() {
-	c := doozer.New("<test>", *addr)
+	c, err := doozer.Dial(*addr)
+	if err != nil {
+		bail(err)
+	}
 
 	rev, err := c.Rev()
 	if err != nil {

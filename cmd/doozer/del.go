@@ -18,9 +18,12 @@ no change will be made.
 func del(path, rev string) {
 	oldRev := mustAtoi64(rev)
 
-	c := doozer.New("<test>", *addr)
+	c, err := doozer.Dial(*addr)
+	if err != nil {
+		bail(err)
+	}
 
-	err := c.Del(path, oldRev)
+	err = c.Del(path, oldRev)
 	if err != nil {
 		bail(err)
 	}
