@@ -19,6 +19,7 @@ mk() {
     gomake clean
 }
 
+make clean
 for cmd in $CMDS
 do (mk cmd/$cmd)
 done
