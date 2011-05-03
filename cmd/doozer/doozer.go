@@ -40,7 +40,7 @@ Global Options:
 	usage2 = `
 Environment:
 
-    DOOZER_TOKEN
+    DOOZER_SECRET
 
         Set the capability token for access to the server if needed.
 
@@ -99,7 +99,7 @@ func dial() *doozer.Conn {
 		bail(err)
 	}
 
-	if token := os.Getenv("DOOZER_TOKEN"); token != "" {
+	if token := os.Getenv("DOOZER_SECRET"); token != "" {
 		err := c.Access(token)
 		if err != nil {
 			bail(err)
