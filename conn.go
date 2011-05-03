@@ -190,6 +190,13 @@ func (c *Conn) write(buf []byte) os.Error {
 	return err
 }
 
+// Attempts access to the store
+func (c *Conn) Access(token string) os.Error {
+	var t txn
+	t.req.Verb = newRequest_Verb(request_ACCESS)
+	t.req.Value = []byte(token)
+	return c.call(&t)
+}
 
 // Sets the contents of file to body, if it hasn't been modified since oldRev.
 func (c *Conn) Set(file string, oldRev int64, body []byte) (newRev int64, err os.Error) {

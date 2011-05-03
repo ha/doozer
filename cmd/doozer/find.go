@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/ha/doozer"
+	"os"
 )
 
 
@@ -26,16 +26,14 @@ Here, <path> is the file's path, and LF is an ASCII line-feed char.
 
 
 func find(glob string) {
-	c, err := doozer.Dial(*addr)
-	if err != nil {
-		bail(err)
-	}
+	c := dial()
 
 	if glob[len(glob)-1:] != "/" {
 		glob = glob + "/"
 	}
 
 	if *rrev == -1 {
+		var err os.Error
 		*rrev, err = c.Rev()
 		if err != nil {
 			bail(err)

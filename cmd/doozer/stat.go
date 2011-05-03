@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/ha/doozer"
 	"os"
 )
 
@@ -18,10 +17,7 @@ Otherwise, prints its revision and length.
 
 
 func stat(path string) {
-	c, err := doozer.Dial(*addr)
-	if err != nil {
-		bail(err)
-	}
+	c := dial()
 
 	len, rev, err := c.Stat(path, nil)
 	if err != nil {

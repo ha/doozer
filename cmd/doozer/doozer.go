@@ -38,6 +38,12 @@ The exit status is 0 on success, 1 for a rev mismatch, and 2 otherwise.
 Global Options:
 `
 	usage2 = `
+Environment:
+
+    DOOZER_TOKEN
+
+        Set the capability token for access to the server if needed.
+
 Commands:
 `
 )
@@ -84,6 +90,22 @@ func mustAtoi64(arg string) int64 {
 		bail(err)
 	}
 	return n
+}
+
+
+func dial() *doozer.Conn {
+	c, err := doozer.Dial(*addr)
+	if err != nil {
+		bail(err)
+	}
+
+	if token := os.Getenv("DOOZER_TOKEN"); token != "" {
+		err := c.Access(token)
+		if err != nil {
+			bail(err)
+		}
+	}
+	return c
 }
 
 

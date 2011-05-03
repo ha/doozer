@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/ha/doozer"
 	"os"
 )
 
@@ -13,10 +12,7 @@ func init() {
 
 
 func get(path string) {
-	c, err := doozer.Dial(*addr)
-	if err != nil {
-		bail(err)
-	}
+	c := dial()
 
 	body, _, err := c.Get(path, nil)
 	if err != nil {

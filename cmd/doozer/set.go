@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/ha/doozer"
 	"io/ioutil"
 	"os"
 )
@@ -23,10 +22,7 @@ Prints the new revision on stdout, or an error message on stderr.
 func set(path, rev string) {
 	oldRev := mustAtoi64(rev)
 
-	c, err := doozer.Dial(*addr)
-	if err != nil {
-		bail(err)
-	}
+	c := dial()
 
 	body, err := ioutil.ReadAll(os.Stdin)
 	if err != nil {

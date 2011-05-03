@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/ha/doozer"
 )
 
 
@@ -13,10 +12,7 @@ func init() {
 
 
 func rev() {
-	c, err := doozer.Dial(*addr)
-	if err != nil {
-		bail(err)
-	}
+	c := dial()
 
 	rev, err := c.Rev()
 	if err != nil {

@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/ha/doozer"
 	"os"
 )
 
@@ -29,12 +28,10 @@ line-feed char.
 
 
 func walk(glob string) {
-	c, err := doozer.Dial(*addr)
-	if err != nil {
-		bail(err)
-	}
+	c := dial()
 
 	if *rrev == -1 {
+		var err os.Error
 		*rrev, err = c.Rev()
 		if err != nil {
 			bail(err)
