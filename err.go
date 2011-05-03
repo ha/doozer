@@ -14,6 +14,7 @@ var (
 
 
 var (
+	ErrOther    response_Err = response_OTHER
 	ErrNotDir   response_Err = response_NOTDIR
 	ErrIsDir    response_Err = response_ISDIR
 	ErrNoEnt    response_Err = response_NOENT
