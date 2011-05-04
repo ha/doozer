@@ -37,7 +37,9 @@ The exit status is 0 on success, 1 for a rev mismatch, and 2 otherwise.
 
 Global Options:
 `
-	usage2 = `
+	usage2 = `Environment:
+
+  DOOZER_URI - The doozer cluster to bind to; overriden by -a.
 
 Commands:
 `
@@ -98,6 +100,10 @@ func dial() *doozer.Conn {
 
 
 func main() {
+	if e := os.Getenv("DOOZER_URI"); e != "" {
+		*uri = e
+	}
+
 	flag.Usage = usage
 	flag.Parse()
 
