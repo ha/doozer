@@ -64,6 +64,8 @@ func Dial(addr string) (*Conn, os.Error) {
 }
 
 
+// DialUri connects to one of the doozer servers given in `uri`. If `uri`
+// contains a secret key, then DialUri will call `Access` with the secret.
 func DialUri(uri string) (*Conn, os.Error) {
 	if !strings.HasPrefix(uri, uriPrefix) {
 		return nil, ErrInvalidUri
@@ -80,7 +82,21 @@ func DialUri(uri string) (*Conn, os.Error) {
 		return nil, ErrInvalidUri
 	}
 
-	c := Dial(addrs[rand.Int()%len(addrs)])
+	c, err := Dial(addrs[rand.Int()%len(addrs)])
+	if err != nil {
+		return nil, err
+	}
+
+	secret, ok := p["sk"]
+	if ok {
+		err = c.Access(secret[0])
+		if err != nil {
+			c.Close()
+			return nil, err
+		}
+	}
+
+	return c, nil
 }
 
 
