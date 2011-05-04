@@ -7,7 +7,6 @@ const (
 	del
 )
 
-
 type Event struct {
 	Rev  int64
 	Path string

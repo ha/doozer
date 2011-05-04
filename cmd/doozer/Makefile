@@ -15,7 +15,6 @@ GOFILES=\
 	stat.go\
 	vers.go\
 	wait.go\
-	walk.go\
 	find.go\
 
 include $(GOROOT)/src/Make.cmd

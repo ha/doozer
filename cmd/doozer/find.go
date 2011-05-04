@@ -2,35 +2,22 @@ package main
 
 import (
 	"fmt"
+	"github.com/ha/doozer"
 	"os"
 )
 
 
 func init() {
-	cmds["find"] = cmd{find, "<glob>", "list files"}
-	cmdHelp["find"] = `Prints the tree matching <glob>
+	cmds["find"] = cmd{find, "<path>", "list files"}
+	cmdHelp["find"] = `Prints the tree rooted at <path>
 
-Rules for <glob> pattern-matching:
- - '?' matches a single char in a single path component
- - '*' matches zero or more chars in a single path component
- - '**' matches zero or more chars in zero or more components
- - any other sequence matches itself
-
-Prints a sequence of paths, one for each file/directory. Format of each record:
-
-  <path> LF
-
-Here, <path> is the file's path, and LF is an ASCII line-feed char.
+Prints the path for each file or directory, one per line.
 `
 }
 
 
-func find(glob string) {
+func find(path string) {
 	c := dial()
-
-	if glob[len(glob)-1:] != "/" {
-		glob = glob + "/"
-	}
 
 	if *rrev == -1 {
 		var err os.Error
@@ -40,12 +27,34 @@ func find(glob string) {
 		}
 	}
 
-	info, err := c.Walk(glob+"**", *rrev, 0, -1)
-	if err != nil {
-		bail(err)
-	}
+	v := make(vis)
+	errs := make(chan os.Error)
+	go func() {
+		doozer.Walk(c, *rrev, path, v, errs)
+		close(v)
+	}()
 
-	for _, ev := range info {
-		fmt.Println(ev.Path)
+	for {
+		select {
+		case path, ok := <-v:
+			if !ok {
+				return
+			}
+			fmt.Println(path)
+		case err := <-errs:
+			fmt.Fprintln(os.Stderr, err)
+		}
 	}
+}
+
+
+type vis chan string
+
+func (v vis) VisitDir(path string, f *doozer.FileInfo) bool {
+	v <- path
+	return true
+}
+
+func (v vis) VisitFile(path string, f *doozer.FileInfo) {
+	v <- path
 }

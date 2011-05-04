@@ -323,6 +323,53 @@ func (c *Conn) Getdir(dir string, rev int64, off, lim int) (names []string, err 
 }
 
 
+// Getdirinfo reads metadata for up to lim files from dir, at revision rev,
+// into an array.
+// Files are read in lexicographical order, starting at position off.
+// A negative lim means to read until the end.
+// Getdirinfo returns the array and an error, if any.
+func (c *Conn) Getdirinfo(dir string, rev int64, off, lim int) (a []FileInfo, err os.Error) {
+	names, err := c.Getdir(dir, rev, off, lim)
+	if err != nil {
+		return nil, err
+	}
+
+	if dir != "/" {
+		dir += "/"
+	}
+	a = make([]FileInfo, len(names))
+	for i, name := range names {
+		var fp *FileInfo
+		fp, err = c.Statinfo(rev, dir+name)
+		if err != nil {
+			a[i].Name = name
+		} else {
+			a[i] = *fp
+		}
+	}
+	return
+}
+
+
+// Statinfo returns metadata about the file or directory at path,
+// in revision *storeRev. If storeRev is nil, uses the current
+// revision.
+func (c *Conn) Statinfo(rev int64, path string) (f *FileInfo, err os.Error) {
+	f = new(FileInfo)
+	f.Len, f.Rev, err = c.Stat(path, &rev)
+	if err != nil {
+		return nil, err
+	}
+	if f.Rev == missing {
+		return nil, ErrNoEnt
+	}
+	f.Name = basename(path)
+	f.IsSet = true
+	f.IsDir = f.Rev == dir
+	return f, nil
+}
+
+
 // Stat returns metadata about the file or directory at path,
 // in revision *storeRev. If storeRev is nil, uses the current
 // revision.
@@ -344,6 +391,7 @@ func (c *Conn) Stat(path string, storeRev *int64) (len int, fileRev int64, err o
 // Walk reads up to lim entries matching glob, in revision rev, into an array.
 // Entries are read in lexicographical order, starting at position off.
 // A negative lim means to read until the end.
+// Conn.Walk will be removed in a future release. Use Walk instead.
 func (c *Conn) Walk(glob string, rev int64, off, lim int) (info []Event, err os.Error) {
 	for lim != 0 {
 		var t txn

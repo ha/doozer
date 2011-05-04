@@ -5,7 +5,9 @@ GOFILES=\
 	conn.go\
 	err.go\
 	event.go\
+	file.go\
 	msg.pb.go\
+	walk.go\
 
 include $(GOROOT)/src/Make.pkg
 
