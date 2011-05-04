@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	addr        = flag.String("a", "127.0.0.1:8046", "the address to bind to")
+	uri         = flag.String("a", "doozer:?ca=127.0.0.1:8046", "the address to bind to")
 	rrev        = flag.Int64("r", -1, "request rev")
 	showHelp    = flag.Bool("h", false, "show help")
 	showVersion = flag.Bool("v", false, "print version string")
@@ -38,11 +38,6 @@ The exit status is 0 on success, 1 for a rev mismatch, and 2 otherwise.
 Global Options:
 `
 	usage2 = `
-Environment:
-
-    DOOZER_SECRET
-
-        Set the capability token for access to the server if needed.
 
 Commands:
 `
@@ -94,16 +89,9 @@ func mustAtoi64(arg string) int64 {
 
 
 func dial() *doozer.Conn {
-	c, err := doozer.Dial(*addr)
+	c, err := doozer.DialUri(*uri)
 	if err != nil {
 		bail(err)
-	}
-
-	if token := os.Getenv("DOOZER_SECRET"); token != "" {
-		err := c.Access(token)
-		if err != nil {
-			bail(err)
-		}
 	}
 	return c
 }

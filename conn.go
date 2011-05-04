@@ -5,10 +5,22 @@ import (
 	"encoding/binary"
 	"github.com/kr/pretty.go"
 	"goprotobuf.googlecode.com/hg/proto"
+	"http"
 	"io"
 	"log"
 	"net"
 	"os"
+	"rand"
+	"strings"
+)
+
+
+var (
+	uriPrefix = "doozer:?"
+)
+
+var (
+	ErrInvalidUri = os.NewError("invalid uri")
 )
 
 
@@ -49,6 +61,26 @@ func Dial(addr string) (*Conn, os.Error) {
 	go c.mux(errch)
 	go c.readAll(errch)
 	return &c, nil
+}
+
+
+func DialUri(uri string) (*Conn, os.Error) {
+	if !strings.HasPrefix(uri, uriPrefix) {
+		return nil, ErrInvalidUri
+	}
+
+	q := uri[len(uriPrefix):]
+	p, err := http.ParseQuery(q)
+	if err != nil {
+		return nil, err
+	}
+
+	addrs, ok := p["ca"]
+	if !ok {
+		return nil, ErrInvalidUri
+	}
+
+	c := Dial(addrs[rand.Int()%len(addrs)])
 }
 
 
