@@ -141,7 +141,7 @@ func main() {
 	}
 
 	args := flag.Args()
-	ft := reflect.Typeof(c.f).(*reflect.FuncType)
+	ft := reflect.TypeOf(c.f)
 	if len(args) != ft.NumIn() {
 		fmt.Fprintf(os.Stderr, "%s: wrong number of arguments\n", cmd)
 		help(cmd)
@@ -150,8 +150,8 @@ func main() {
 
 	vals := make([]reflect.Value, len(args))
 	for i, s := range args {
-		vals[i] = reflect.NewValue(s)
+		vals[i] = reflect.ValueOf(s)
 	}
-	fv := reflect.NewValue(c.f).(*reflect.FuncValue)
+	fv := reflect.ValueOf(c.f)
 	fv.Call(vals)
 }
