@@ -326,7 +326,7 @@ func (c *Conn) Getdir(dir string, rev int64, off, lim int) (names []string, err 
 // Stat returns metadata about the file or directory at path,
 // in revision *storeRev. If storeRev is nil, uses the current
 // revision.
-func (c *Conn) Stat(path string, storeRev *int64) (len int32, fileRev int64, err os.Error) {
+func (c *Conn) Stat(path string, storeRev *int64) (len int, fileRev int64, err os.Error) {
 	var t txn
 	t.req.Verb = newRequest_Verb(request_STAT)
 	t.req.Path = &path
@@ -337,7 +337,7 @@ func (c *Conn) Stat(path string, storeRev *int64) (len int32, fileRev int64, err
 		return 0, 0, err
 	}
 
-	return proto.GetInt32(t.resp.Len), proto.GetInt64(t.resp.Rev), nil
+	return int(proto.GetInt32(t.resp.Len)), proto.GetInt64(t.resp.Rev), nil
 }
 
 
