@@ -23,10 +23,7 @@ Output is a sequence of records, one for each change. Format of each record:
   <path> <rev> <set|del> <len> LF <body> LF
 
 Here, <path> is the file's path, <rev> is the revision, <len> is the number of
-bytes in the body, <body> is the bytes of the body, and LF is an ASCII
-line-feed char.
-
-If a file is deleted, <rev> will be 0.
+bytes in the body, and LF is an ASCII line-feed char.
 `
 }
 
