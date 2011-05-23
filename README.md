@@ -11,12 +11,22 @@ To install:
 
 To use:
 
-    package mypackage
+    package main
 
-    import "github.com/ha/doozer"
+    import (
+    	"github.com/ha/doozer"
+    	"os"
+    )
 
-    func attach() *doozer.Client {
-        return doozer.New(name, addr)
+    func main() {
+    	doozer, err := doozer.Dial("localhost:8046")
+
+    	if err != nil {
+    		panic(err)
+    	}
+
+    	myfile, _, _ := doozer.Get("/myfile", nil)
+    	os.Stdout.Write(myfile)
     }
 
 ## License and Authors
