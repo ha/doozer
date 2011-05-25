@@ -17,6 +17,7 @@ GOFILES=\
 	wait.go\
 	watch.go\
 	find.go\
+	touch.go\
 
 include $(GOROOT)/src/Make.cmd
 
