@@ -65,8 +65,9 @@ func Dial(addr string) (*Conn, os.Error) {
 
 
 // DialUri connects to one of the doozer servers given in `uri`. If `uri`
-// contains a secret key, then DialUri will call `Access` with the secret.
-func DialUri(uri string) (*Conn, os.Error) {
+// contains a cluster name, it will lookup addrs to try in `buri`.  If `uri`
+// contains a  secret key, then DialUri will call `Access` with the secret.
+func DialUri(uri, buri string) (*Conn, os.Error) {
 	if !strings.HasPrefix(uri, uriPrefix) {
 		return nil, ErrInvalidUri
 	}
@@ -77,9 +78,25 @@ func DialUri(uri string) (*Conn, os.Error) {
 		return nil, err
 	}
 
-	addrs, ok := p["ca"]
-	if !ok {
-		return nil, ErrInvalidUri
+	addrs := make([]string, 0)
+
+	name, ok := p["cn"]
+	if ok && buri != "" {
+		c, err := DialUri(buri, "")
+		if err != nil {
+			return nil, err
+		}
+
+		addrs, err = lookup(c, name[0])
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		var ok bool
+		addrs, ok = p["ca"]
+		if !ok {
+			return nil, ErrInvalidUri
+		}
 	}
 
 	c, err := Dial(addrs[rand.Int()%len(addrs)])
@@ -99,6 +116,31 @@ func DialUri(uri string) (*Conn, os.Error) {
 	return c, nil
 }
 
+// Find possible addresses for cluster named name.
+func lookup(b *Conn, name string) (as []string, err os.Error) {
+        rev, err := b.Rev()
+        if err != nil {
+                return nil, err
+        }
+
+        path := "/ctl/ns/" + name
+        names, err := b.Getdir(path, rev, 0, -1)
+        if err, ok := err.(*Error); ok && err.Err == ErrNoEnt {
+                return nil, nil
+        } else if err != nil {
+                return nil, err
+        }
+
+        path += "/"
+        for _, name := range names {
+                body, _, err := b.Get(path+name, &rev)
+                if err != nil {
+                        return nil, err
+                }
+                as = append(as, string(body))
+        }
+        return as, nil
+}
 
 func (c *Conn) call(t *txn) os.Error {
 	t.done = make(chan bool)

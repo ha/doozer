@@ -12,6 +12,7 @@ import (
 
 var (
 	uri         = flag.String("a", "doozer:?ca=127.0.0.1:8046", "the address to bind to")
+	buri        = flag.String("b", "", "the DzNS uri")
 	rrev        = flag.Int64("r", -1, "request rev")
 	showHelp    = flag.Bool("h", false, "show help")
 	showVersion = flag.Bool("v", false, "print version string")
@@ -40,6 +41,8 @@ Global Options:
 	usage2 = `Environment:
 
   DOOZER_URI - The doozer cluster to bind to; overriden by -a.
+
+  DOOZER_BOOT_URI - The DzNS to lookup address in; overriden by -b.
 
 Commands:
 `
@@ -91,7 +94,7 @@ func mustAtoi64(arg string) int64 {
 
 
 func dial() *doozer.Conn {
-	c, err := doozer.DialUri(*uri)
+	c, err := doozer.DialUri(*uri, *buri)
 	if err != nil {
 		bail(err)
 	}
@@ -102,6 +105,10 @@ func dial() *doozer.Conn {
 func main() {
 	if e := os.Getenv("DOOZER_URI"); e != "" {
 		*uri = e
+	}
+
+	if e := os.Getenv("DOOZER_BOOT_URI"); e != "" {
+		*buri = e
 	}
 
 	flag.Usage = usage
