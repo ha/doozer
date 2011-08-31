@@ -67,7 +67,7 @@ func usage() {
 		names = append(names, k)
 		us[k] = u
 	}
-	sort.SortStrings(names)
+	sort.Strings(names)
 	for _, k := range names {
 		fmt.Fprintf(os.Stderr, "  %-*s - %s\n", max, us[k], cmds[k].d)
 	}
