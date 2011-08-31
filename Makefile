@@ -22,4 +22,4 @@ msg.pb.go: msg.proto
 	|gofmt >$@
 	rm -rf _pb
 
-CLEANFILES+=_pb
+CLEANFILES+=_pb *.pb.go
