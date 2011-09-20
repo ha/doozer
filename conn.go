@@ -1,19 +1,18 @@
 package doozer
 
-
 import (
 	"encoding/binary"
 	"github.com/kr/pretty.go"
 	"goprotobuf.googlecode.com/hg/proto"
-	"http"
+
 	"io"
 	"log"
 	"net"
 	"os"
 	"rand"
 	"strings"
+	"url"
 )
-
 
 var (
 	uriPrefix = "doozer:?"
@@ -23,14 +22,12 @@ var (
 	ErrInvalidUri = os.NewError("invalid uri")
 )
 
-
 type txn struct {
 	req  request
 	resp *response
 	err  os.Error
 	done chan bool
 }
-
 
 type Conn struct {
 	addr    string
@@ -41,7 +38,6 @@ type Conn struct {
 	stop    chan bool
 	stopped chan bool
 }
-
 
 // Dial connects to a single doozer server.
 func Dial(addr string) (*Conn, os.Error) {
@@ -63,7 +59,6 @@ func Dial(addr string) (*Conn, os.Error) {
 	return &c, nil
 }
 
-
 // DialUri connects to one of the doozer servers given in `uri`. If `uri`
 // contains a cluster name, it will lookup addrs to try in `buri`.  If `uri`
 // contains a  secret key, then DialUri will call `Access` with the secret.
@@ -73,7 +68,7 @@ func DialUri(uri, buri string) (*Conn, os.Error) {
 	}
 
 	q := uri[len(uriPrefix):]
-	p, err := http.ParseQuery(q)
+	p, err := url.ParseQuery(q)
 	if err != nil {
 		return nil, err
 	}
@@ -118,28 +113,28 @@ func DialUri(uri, buri string) (*Conn, os.Error) {
 
 // Find possible addresses for cluster named name.
 func lookup(b *Conn, name string) (as []string, err os.Error) {
-        rev, err := b.Rev()
-        if err != nil {
-                return nil, err
-        }
+	rev, err := b.Rev()
+	if err != nil {
+		return nil, err
+	}
 
-        path := "/ctl/ns/" + name
-        names, err := b.Getdir(path, rev, 0, -1)
-        if err, ok := err.(*Error); ok && err.Err == ErrNoEnt {
-                return nil, nil
-        } else if err != nil {
-                return nil, err
-        }
+	path := "/ctl/ns/" + name
+	names, err := b.Getdir(path, rev, 0, -1)
+	if err, ok := err.(*Error); ok && err.Err == ErrNoEnt {
+		return nil, nil
+	} else if err != nil {
+		return nil, err
+	}
 
-        path += "/"
-        for _, name := range names {
-                body, _, err := b.Get(path+name, &rev)
-                if err != nil {
-                        return nil, err
-                }
-                as = append(as, string(body))
-        }
-        return as, nil
+	path += "/"
+	for _, name := range names {
+		body, _, err := b.Get(path+name, &rev)
+		if err != nil {
+			return nil, err
+		}
+		as = append(as, string(body))
+	}
+	return as, nil
 }
 
 func (c *Conn) call(t *txn) os.Error {
@@ -159,7 +154,6 @@ func (c *Conn) call(t *txn) os.Error {
 	return nil
 }
 
-
 // After Close is called, operations on c will return ErrClosed.
 func (c *Conn) Close() {
 	select {
@@ -167,7 +161,6 @@ func (c *Conn) Close() {
 	default:
 	}
 }
-
 
 func (c *Conn) mux(errch chan os.Error) {
 	txns := make(map[int32]*txn)
@@ -239,7 +232,6 @@ error:
 	close(c.stopped)
 }
 
-
 func (c *Conn) readAll(errch chan os.Error) {
 	for {
 		buf, err := c.read()
@@ -251,7 +243,6 @@ func (c *Conn) readAll(errch chan os.Error) {
 		c.msg <- buf
 	}
 }
-
 
 func (c *Conn) read() ([]byte, os.Error) {
 	var size int32
@@ -268,7 +259,6 @@ func (c *Conn) read() ([]byte, os.Error) {
 
 	return buf, nil
 }
-
 
 func (c *Conn) write(buf []byte) os.Error {
 	err := binary.Write(c.conn, binary.BigEndian, int32(len(buf)))
@@ -304,7 +294,6 @@ func (c *Conn) Set(file string, oldRev int64, body []byte) (newRev int64, err os
 	return proto.GetInt64(t.resp.Rev), nil
 }
 
-
 // Deletes file, if it hasn't been modified since rev.
 func (c *Conn) Del(file string, rev int64) os.Error {
 	var t txn
@@ -314,13 +303,11 @@ func (c *Conn) Del(file string, rev int64) os.Error {
 	return c.call(&t)
 }
 
-
 func (c *Conn) Nop() os.Error {
 	var t txn
 	t.req.Verb = newRequest_Verb(request_NOP)
 	return c.call(&t)
 }
-
 
 // Returns the body and revision of the file at path,
 // as of store revision *rev.
@@ -338,7 +325,6 @@ func (c *Conn) Get(file string, rev *int64) ([]byte, int64, os.Error) {
 
 	return t.resp.Value, proto.GetInt64(t.resp.Rev), nil
 }
-
 
 // Getdir reads up to lim names from dir, at revision rev, into an array.
 // Names are read in lexicographical order, starting at position off.
@@ -363,7 +349,6 @@ func (c *Conn) Getdir(dir string, rev int64, off, lim int) (names []string, err 
 	}
 	return
 }
-
 
 // Getdirinfo reads metadata for up to lim files from dir, at revision rev,
 // into an array.
@@ -392,7 +377,6 @@ func (c *Conn) Getdirinfo(dir string, rev int64, off, lim int) (a []FileInfo, er
 	return
 }
 
-
 // Statinfo returns metadata about the file or directory at path,
 // in revision *storeRev. If storeRev is nil, uses the current
 // revision.
@@ -411,7 +395,6 @@ func (c *Conn) Statinfo(rev int64, path string) (f *FileInfo, err os.Error) {
 	return f, nil
 }
 
-
 // Stat returns metadata about the file or directory at path,
 // in revision *storeRev. If storeRev is nil, uses the current
 // revision.
@@ -428,7 +411,6 @@ func (c *Conn) Stat(path string, storeRev *int64) (len int, fileRev int64, err o
 
 	return int(proto.GetInt32(t.resp.Len)), proto.GetInt64(t.resp.Rev), nil
 }
-
 
 // Walk reads up to lim entries matching glob, in revision rev, into an array.
 // Entries are read in lexicographical order, starting at position off.
@@ -460,7 +442,6 @@ func (c *Conn) Walk(glob string, rev int64, off, lim int) (info []Event, err os.
 	return
 }
 
-
 // Waits for the first change, on or after rev, to any file matching glob.
 func (c *Conn) Wait(glob string, rev int64) (ev Event, err os.Error) {
 	var t txn
@@ -479,7 +460,6 @@ func (c *Conn) Wait(glob string, rev int64) (ev Event, err os.Error) {
 	ev.Flag = *t.resp.Flags & (set | del)
 	return
 }
-
 
 // Rev returns the current revision of the store.
 func (c *Conn) Rev() (int64, os.Error) {

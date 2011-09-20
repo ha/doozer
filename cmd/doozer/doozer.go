@@ -48,7 +48,6 @@ Commands:
 `
 )
 
-
 func usage() {
 	fmt.Fprintf(os.Stderr, "Use: %s [options] <command> [options] [args]\n", self)
 	fmt.Fprint(os.Stderr, usage1)
@@ -67,13 +66,12 @@ func usage() {
 		names = append(names, k)
 		us[k] = u
 	}
-	sort.SortStrings(names)
+	sort.Strings(names)
 	for _, k := range names {
 		fmt.Fprintf(os.Stderr, "  %-*s - %s\n", max, us[k], cmds[k].d)
 	}
 
 }
-
 
 func bail(e os.Error) {
 	fmt.Fprintln(os.Stderr, "Error:", e)
@@ -83,7 +81,6 @@ func bail(e os.Error) {
 	os.Exit(2)
 }
 
-
 func mustAtoi64(arg string) int64 {
 	n, err := strconv.Atoi64(arg)
 	if err != nil {
@@ -92,7 +89,6 @@ func mustAtoi64(arg string) int64 {
 	return n
 }
 
-
 func dial() *doozer.Conn {
 	c, err := doozer.DialUri(*uri, *buri)
 	if err != nil {
@@ -100,7 +96,6 @@ func dial() *doozer.Conn {
 	}
 	return c
 }
-
 
 func main() {
 	if e := os.Getenv("DOOZER_URI"); e != "" {
