@@ -1,7 +1,6 @@
 package doozer
 
 import (
-	"fmt"
 	"goprotobuf.googlecode.com/hg/proto"
 	"os"
 )
@@ -23,15 +22,6 @@ var (
 	ErrTooLate  response_Err = response_TOO_LATE
 	ErrReadonly response_Err = response_READONLY
 )
-
-
-func (e response_Err) String() string {
-	s := response_Err_name[int32(e)]
-	if s == "" {
-		s = fmt.Sprint("unknown error ", e)
-	}
-	return s
-}
 
 
 type Error struct {
