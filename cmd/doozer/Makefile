@@ -21,6 +21,5 @@ GOFILES=\
 
 include $(GOROOT)/src/Make.cmd
 
-.PHONY: vers.go
 vers.go:
 	printf 'package main\n\nconst version = `%s`\n' '$(VERSION)' > $@
