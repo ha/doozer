@@ -2,16 +2,16 @@ package doozer
 
 import (
 	"encoding/binary"
+	"errors"
 	"github.com/kr/pretty.go"
 	"goprotobuf.googlecode.com/hg/proto"
 
 	"io"
 	"log"
+	"math/rand"
 	"net"
-	"os"
-	"rand"
+	"net/url"
 	"strings"
-	"url"
 )
 
 var (
@@ -19,13 +19,13 @@ var (
 )
 
 var (
-	ErrInvalidUri = os.NewError("invalid uri")
+	ErrInvalidUri = errors.New("invalid uri")
 )
 
 type txn struct {
 	req  request
 	resp *response
-	err  os.Error
+	err  error
 	done chan bool
 }
 
@@ -34,15 +34,15 @@ type Conn struct {
 	conn    net.Conn
 	send    chan *txn
 	msg     chan []byte
-	err     os.Error
+	err     error
 	stop    chan bool
 	stopped chan bool
 }
 
 // Dial connects to a single doozer server.
-func Dial(addr string) (*Conn, os.Error) {
+func Dial(addr string) (*Conn, error) {
 	var c Conn
-	var err os.Error
+	var err error
 	c.addr = addr
 	c.conn, err = net.Dial("tcp", addr)
 	if err != nil {
@@ -53,7 +53,7 @@ func Dial(addr string) (*Conn, os.Error) {
 	c.msg = make(chan []byte)
 	c.stop = make(chan bool, 1)
 	c.stopped = make(chan bool)
-	errch := make(chan os.Error, 1)
+	errch := make(chan error, 1)
 	go c.mux(errch)
 	go c.readAll(errch)
 	return &c, nil
@@ -62,7 +62,7 @@ func Dial(addr string) (*Conn, os.Error) {
 // DialUri connects to one of the doozer servers given in `uri`. If `uri`
 // contains a cluster name, it will lookup addrs to try in `buri`.  If `uri`
 // contains a  secret key, then DialUri will call `Access` with the secret.
-func DialUri(uri, buri string) (*Conn, os.Error) {
+func DialUri(uri, buri string) (*Conn, error) {
 	if !strings.HasPrefix(uri, uriPrefix) {
 		return nil, ErrInvalidUri
 	}
@@ -112,7 +112,7 @@ func DialUri(uri, buri string) (*Conn, os.Error) {
 }
 
 // Find possible addresses for cluster named name.
-func lookup(b *Conn, name string) (as []string, err os.Error) {
+func lookup(b *Conn, name string) (as []string, err error) {
 	rev, err := b.Rev()
 	if err != nil {
 		return nil, err
@@ -137,7 +137,7 @@ func lookup(b *Conn, name string) (as []string, err os.Error) {
 	return as, nil
 }
 
-func (c *Conn) call(t *txn) os.Error {
+func (c *Conn) call(t *txn) error {
 	t.done = make(chan bool)
 	select {
 	case <-c.stopped:
@@ -162,10 +162,10 @@ func (c *Conn) Close() {
 	}
 }
 
-func (c *Conn) mux(errch chan os.Error) {
+func (c *Conn) mux(errch chan error) {
 	txns := make(map[int32]*txn)
 	var n int32 // next tag
-	var err os.Error
+	var err error
 
 	for {
 		select {
@@ -211,7 +211,7 @@ func (c *Conn) mux(errch chan os.Error) {
 				continue
 			}
 
-			txns[*r.Tag] = nil, false
+			delete(txns, *r.Tag)
 			t.resp = &r
 			t.done <- true
 		case err = <-errch:
@@ -232,7 +232,7 @@ error:
 	close(c.stopped)
 }
 
-func (c *Conn) readAll(errch chan os.Error) {
+func (c *Conn) readAll(errch chan error) {
 	for {
 		buf, err := c.read()
 		if err != nil {
@@ -244,7 +244,7 @@ func (c *Conn) readAll(errch chan os.Error) {
 	}
 }
 
-func (c *Conn) read() ([]byte, os.Error) {
+func (c *Conn) read() ([]byte, error) {
 	var size int32
 	err := binary.Read(c.conn, binary.BigEndian, &size)
 	if err != nil {
@@ -260,7 +260,7 @@ func (c *Conn) read() ([]byte, os.Error) {
 	return buf, nil
 }
 
-func (c *Conn) write(buf []byte) os.Error {
+func (c *Conn) write(buf []byte) error {
 	err := binary.Write(c.conn, binary.BigEndian, int32(len(buf)))
 	if err != nil {
 		return err
@@ -271,7 +271,7 @@ func (c *Conn) write(buf []byte) os.Error {
 }
 
 // Attempts access to the store
-func (c *Conn) Access(token string) os.Error {
+func (c *Conn) Access(token string) error {
 	var t txn
 	t.req.Verb = newRequest_Verb(request_ACCESS)
 	t.req.Value = []byte(token)
@@ -279,7 +279,7 @@ func (c *Conn) Access(token string) os.Error {
 }
 
 // Sets the contents of file to body, if it hasn't been modified since oldRev.
-func (c *Conn) Set(file string, oldRev int64, body []byte) (newRev int64, err os.Error) {
+func (c *Conn) Set(file string, oldRev int64, body []byte) (newRev int64, err error) {
 	var t txn
 	t.req.Verb = newRequest_Verb(request_SET)
 	t.req.Path = &file
@@ -295,7 +295,7 @@ func (c *Conn) Set(file string, oldRev int64, body []byte) (newRev int64, err os
 }
 
 // Deletes file, if it hasn't been modified since rev.
-func (c *Conn) Del(file string, rev int64) os.Error {
+func (c *Conn) Del(file string, rev int64) error {
 	var t txn
 	t.req.Verb = newRequest_Verb(request_DEL)
 	t.req.Path = &file
@@ -303,7 +303,7 @@ func (c *Conn) Del(file string, rev int64) os.Error {
 	return c.call(&t)
 }
 
-func (c *Conn) Nop() os.Error {
+func (c *Conn) Nop() error {
 	var t txn
 	t.req.Verb = newRequest_Verb(request_NOP)
 	return c.call(&t)
@@ -312,7 +312,7 @@ func (c *Conn) Nop() os.Error {
 // Returns the body and revision of the file at path,
 // as of store revision *rev.
 // If rev is nil, uses the current state.
-func (c *Conn) Get(file string, rev *int64) ([]byte, int64, os.Error) {
+func (c *Conn) Get(file string, rev *int64) ([]byte, int64, error) {
 	var t txn
 	t.req.Verb = newRequest_Verb(request_GET)
 	t.req.Path = &file
@@ -329,7 +329,7 @@ func (c *Conn) Get(file string, rev *int64) ([]byte, int64, os.Error) {
 // Getdir reads up to lim names from dir, at revision rev, into an array.
 // Names are read in lexicographical order, starting at position off.
 // A negative lim means to read until the end.
-func (c *Conn) Getdir(dir string, rev int64, off, lim int) (names []string, err os.Error) {
+func (c *Conn) Getdir(dir string, rev int64, off, lim int) (names []string, err error) {
 	for lim != 0 {
 		var t txn
 		t.req.Verb = newRequest_Verb(request_GETDIR)
@@ -355,7 +355,7 @@ func (c *Conn) Getdir(dir string, rev int64, off, lim int) (names []string, err 
 // Files are read in lexicographical order, starting at position off.
 // A negative lim means to read until the end.
 // Getdirinfo returns the array and an error, if any.
-func (c *Conn) Getdirinfo(dir string, rev int64, off, lim int) (a []FileInfo, err os.Error) {
+func (c *Conn) Getdirinfo(dir string, rev int64, off, lim int) (a []FileInfo, err error) {
 	names, err := c.Getdir(dir, rev, off, lim)
 	if err != nil {
 		return nil, err
@@ -380,7 +380,7 @@ func (c *Conn) Getdirinfo(dir string, rev int64, off, lim int) (a []FileInfo, er
 // Statinfo returns metadata about the file or directory at path,
 // in revision *storeRev. If storeRev is nil, uses the current
 // revision.
-func (c *Conn) Statinfo(rev int64, path string) (f *FileInfo, err os.Error) {
+func (c *Conn) Statinfo(rev int64, path string) (f *FileInfo, err error) {
 	f = new(FileInfo)
 	f.Len, f.Rev, err = c.Stat(path, &rev)
 	if err != nil {
@@ -398,7 +398,7 @@ func (c *Conn) Statinfo(rev int64, path string) (f *FileInfo, err os.Error) {
 // Stat returns metadata about the file or directory at path,
 // in revision *storeRev. If storeRev is nil, uses the current
 // revision.
-func (c *Conn) Stat(path string, storeRev *int64) (len int, fileRev int64, err os.Error) {
+func (c *Conn) Stat(path string, storeRev *int64) (len int, fileRev int64, err error) {
 	var t txn
 	t.req.Verb = newRequest_Verb(request_STAT)
 	t.req.Path = &path
@@ -416,7 +416,7 @@ func (c *Conn) Stat(path string, storeRev *int64) (len int, fileRev int64, err o
 // Entries are read in lexicographical order, starting at position off.
 // A negative lim means to read until the end.
 // Conn.Walk will be removed in a future release. Use Walk instead.
-func (c *Conn) Walk(glob string, rev int64, off, lim int) (info []Event, err os.Error) {
+func (c *Conn) Walk(glob string, rev int64, off, lim int) (info []Event, err error) {
 	for lim != 0 {
 		var t txn
 		t.req.Verb = newRequest_Verb(request_WALK)
@@ -443,7 +443,7 @@ func (c *Conn) Walk(glob string, rev int64, off, lim int) (info []Event, err os.
 }
 
 // Waits for the first change, on or after rev, to any file matching glob.
-func (c *Conn) Wait(glob string, rev int64) (ev Event, err os.Error) {
+func (c *Conn) Wait(glob string, rev int64) (ev Event, err error) {
 	var t txn
 	t.req.Verb = newRequest_Verb(request_WAIT)
 	t.req.Path = &glob
@@ -462,7 +462,7 @@ func (c *Conn) Wait(glob string, rev int64) (ev Event, err os.Error) {
 }
 
 // Rev returns the current revision of the store.
-func (c *Conn) Rev() (int64, os.Error) {
+func (c *Conn) Rev() (int64, error) {
 	var t txn
 	t.req.Verb = newRequest_Verb(request_REV)
 

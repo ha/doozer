@@ -5,7 +5,6 @@ import (
 	"os"
 )
 
-
 func init() {
 	cmds["watch"] = cmd{watch, "<glob>", "watch for a change"}
 	cmdHelp["watch"] = `Prints changes to any file matching <glob>.
@@ -27,12 +26,11 @@ Here, <path> is the file's path, <rev> is the revision of the change,
 `
 }
 
-
 func watch(glob string) {
 	c := dial()
 
 	if *rrev == -1 {
-		var err os.Error
+		var err error
 		*rrev, err = c.Rev()
 		if err != nil {
 			bail(err)

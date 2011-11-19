@@ -6,7 +6,6 @@ import (
 	"os"
 )
 
-
 func init() {
 	cmds["find"] = cmd{find, "<path>", "list files"}
 	cmdHelp["find"] = `Prints the tree rooted at <path>
@@ -15,12 +14,11 @@ Prints the path for each file or directory, one per line.
 `
 }
 
-
 func find(path string) {
 	c := dial()
 
 	if *rrev == -1 {
-		var err os.Error
+		var err error
 		*rrev, err = c.Rev()
 		if err != nil {
 			bail(err)
@@ -28,7 +26,7 @@ func find(path string) {
 	}
 
 	v := make(vis)
-	errs := make(chan os.Error)
+	errs := make(chan error)
 	go func() {
 		doozer.Walk(c, *rrev, path, v, errs)
 		close(v)
@@ -46,7 +44,6 @@ func find(path string) {
 		}
 	}
 }
-
 
 type vis chan string
 

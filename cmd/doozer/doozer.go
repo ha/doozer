@@ -73,7 +73,7 @@ func usage() {
 
 }
 
-func bail(e os.Error) {
+func bail(e error) {
 	fmt.Fprintln(os.Stderr, "Error:", e)
 	if e == doozer.ErrOldRev {
 		os.Exit(1)

@@ -1,16 +1,15 @@
 package doozer
 
 import (
+	"errors"
 	"goprotobuf.googlecode.com/hg/proto"
-	"os"
 )
 
 var (
-	ErrNoAddrs = os.NewError("no known address")
-	ErrBadTag  = os.NewError("bad tag")
-	ErrClosed  = os.NewError("closed")
+	ErrNoAddrs = errors.New("no known address")
+	ErrBadTag  = errors.New("bad tag")
+	ErrClosed  = errors.New("closed")
 )
-
 
 var (
 	ErrOther    response_Err = response_OTHER
@@ -23,12 +22,10 @@ var (
 	ErrReadonly response_Err = response_READONLY
 )
 
-
 type Error struct {
-	Err    os.Error
+	Err    error
 	Detail string
 }
-
 
 func newError(t *txn) *Error {
 	return &Error{
@@ -37,9 +34,8 @@ func newError(t *txn) *Error {
 	}
 }
 
-
-func (e *Error) String() (s string) {
-	s = e.Err.String()
+func (e *Error) Error() (s string) {
+	s = e.Err.Error()
 	if e.Detail != "" {
 		s += ": " + e.Detail
 	}
