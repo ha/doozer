@@ -6,10 +6,9 @@ package doozer
 import proto "goprotobuf.googlecode.com/hg/proto"
 import "math"
 
-// Reference proto, math & os imports to suppress error if they are not otherwise used.
+// Reference proto & math imports to suppress error if they are not otherwise used.
 var _ = proto.GetString
 var _ = math.Inf
-var _ error
 
 type request_Verb int32
 
@@ -55,7 +54,7 @@ func newRequest_Verb(x request_Verb) *request_Verb {
 	e := request_Verb(x)
 	return &e
 }
-func (x request_Verb) String() string {
+func (x request_Verb) Error() string {
 	return proto.EnumName(request_Verb_name, int32(x))
 }
 
@@ -109,34 +108,34 @@ func newResponse_Err(x response_Err) *response_Err {
 	e := response_Err(x)
 	return &e
 }
-func (x response_Err) String() string {
+func (x response_Err) Error() string {
 	return proto.EnumName(response_Err_name, int32(x))
 }
 
 type request struct {
-	Tag              *int32        `protobuf:"varint,1,opt,name=tag" json:"tag"`
-	Verb             *request_Verb `protobuf:"varint,2,opt,name=verb,enum=doozer.request_Verb" json:"verb"`
-	Path             *string       `protobuf:"bytes,4,opt,name=path" json:"path"`
-	Value            []byte        `protobuf:"bytes,5,opt,name=value" json:"value"`
-	OtherTag         *int32        `protobuf:"varint,6,opt,name=other_tag" json:"other_tag"`
-	Offset           *int32        `protobuf:"varint,7,opt,name=offset" json:"offset"`
-	Rev              *int64        `protobuf:"varint,9,opt,name=rev" json:"rev"`
-	XXX_unrecognized []byte
+	Tag              *int32        `protobuf:"varint,1,opt,name=tag" json:"tag,omitempty"`
+	Verb             *request_Verb `protobuf:"varint,2,opt,name=verb,enum=doozer.request_Verb" json:"verb,omitempty"`
+	Path             *string       `protobuf:"bytes,4,opt,name=path" json:"path,omitempty"`
+	Value            []byte        `protobuf:"bytes,5,opt,name=value" json:"value,omitempty"`
+	OtherTag         *int32        `protobuf:"varint,6,opt,name=other_tag" json:"other_tag,omitempty"`
+	Offset           *int32        `protobuf:"varint,7,opt,name=offset" json:"offset,omitempty"`
+	Rev              *int64        `protobuf:"varint,9,opt,name=rev" json:"rev,omitempty"`
+	XXX_unrecognized []byte        `json:",omitempty"`
 }
 
 func (this *request) Reset()         { *this = request{} }
 func (this *request) String() string { return proto.CompactTextString(this) }
 
 type response struct {
-	Tag              *int32        `protobuf:"varint,1,opt,name=tag" json:"tag"`
-	Flags            *int32        `protobuf:"varint,2,opt,name=flags" json:"flags"`
-	Rev              *int64        `protobuf:"varint,3,opt,name=rev" json:"rev"`
-	Path             *string       `protobuf:"bytes,5,opt,name=path" json:"path"`
-	Value            []byte        `protobuf:"bytes,6,opt,name=value" json:"value"`
-	Len              *int32        `protobuf:"varint,8,opt,name=len" json:"len"`
-	ErrCode          *response_Err `protobuf:"varint,100,opt,name=err_code,enum=doozer.response_Err" json:"err_code"`
-	ErrDetail        *string       `protobuf:"bytes,101,opt,name=err_detail" json:"err_detail"`
-	XXX_unrecognized []byte
+	Tag              *int32        `protobuf:"varint,1,opt,name=tag" json:"tag,omitempty"`
+	Flags            *int32        `protobuf:"varint,2,opt,name=flags" json:"flags,omitempty"`
+	Rev              *int64        `protobuf:"varint,3,opt,name=rev" json:"rev,omitempty"`
+	Path             *string       `protobuf:"bytes,5,opt,name=path" json:"path,omitempty"`
+	Value            []byte        `protobuf:"bytes,6,opt,name=value" json:"value,omitempty"`
+	Len              *int32        `protobuf:"varint,8,opt,name=len" json:"len,omitempty"`
+	ErrCode          *response_Err `protobuf:"varint,100,opt,name=err_code,enum=doozer.response_Err" json:"err_code,omitempty"`
+	ErrDetail        *string       `protobuf:"bytes,101,opt,name=err_detail" json:"err_detail,omitempty"`
+	XXX_unrecognized []byte        `json:",omitempty"`
 }
 
 func (this *response) Reset()         { *this = response{} }
