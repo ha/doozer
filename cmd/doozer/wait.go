@@ -5,7 +5,6 @@ import (
 	"os"
 )
 
-
 func init() {
 	cmds["wait"] = cmd{wait, "<glob>", "wait for a change"}
 	cmdHelp["wait"] = `Prints the next change to a file matching <glob>.
@@ -27,12 +26,11 @@ bytes in the body, and LF is an ASCII line-feed char.
 `
 }
 
-
 func wait(path string) {
 	c := dial()
 
 	if *rrev == -1 {
-		var err os.Error
+		var err error
 		*rrev, err = c.Rev()
 		if err != nil {
 			bail(err)

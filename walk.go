@@ -1,18 +1,13 @@
 package doozer
 
-import (
-	"os"
-)
-
 type Visitor interface {
 	VisitDir(path string, f *FileInfo) bool
 	VisitFile(path string, f *FileInfo)
 }
 
-
 // Walk walks the file tree in revision rev, rooted at root,
 // analogously to Walk in package path/filepath.
-func Walk(c *Conn, rev int64, root string, v Visitor, errors chan<- os.Error) {
+func Walk(c *Conn, rev int64, root string, v Visitor, errors chan<- error) {
 	f, err := c.Statinfo(rev, root)
 	if err != nil {
 		if errors != nil {
@@ -23,8 +18,7 @@ func Walk(c *Conn, rev int64, root string, v Visitor, errors chan<- os.Error) {
 	walk(c, rev, root, f, v, errors)
 }
 
-
-func walk(c *Conn, r int64, path string, f *FileInfo, v Visitor, errors chan<- os.Error) {
+func walk(c *Conn, r int64, path string, f *FileInfo, v Visitor, errors chan<- error) {
 	if !f.IsDir {
 		v.VisitFile(path, f)
 		return
