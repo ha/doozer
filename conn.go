@@ -1,10 +1,10 @@
 package doozer
 
 import (
+	"code.google.com/p/goprotobuf/proto"
 	"encoding/binary"
 	"errors"
 	"github.com/kr/pretty.go"
-	"goprotobuf.googlecode.com/hg/proto"
 
 	"io"
 	"log"

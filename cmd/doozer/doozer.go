@@ -82,7 +82,7 @@ func bail(e error) {
 }
 
 func mustAtoi64(arg string) int64 {
-	n, err := strconv.Atoi64(arg)
+	n, err := strconv.ParseInt(arg, 10, 64)
 	if err != nil {
 		bail(err)
 	}

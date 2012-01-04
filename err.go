@@ -1,8 +1,8 @@
 package doozer
 
 import (
+	"code.google.com/p/goprotobuf/proto"
 	"errors"
-	"goprotobuf.googlecode.com/hg/proto"
 )
 
 var (
