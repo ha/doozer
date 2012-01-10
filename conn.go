@@ -8,10 +8,11 @@ import (
 
 	"io"
 	"log"
-	"math/rand"
+	"crypto/rand"
 	"net"
 	"net/url"
 	"strings"
+	"math/big"
 )
 
 var (
@@ -44,6 +45,7 @@ func Dial(addr string) (*Conn, error) {
 	var c Conn
 	var err error
 	c.addr = addr
+
 	c.conn, err = net.Dial("tcp", addr)
 	if err != nil {
 		return nil, err
@@ -94,7 +96,13 @@ func DialUri(uri, buri string) (*Conn, error) {
 		}
 	}
 
-	c, err := Dial(addrs[rand.Int()%len(addrs)])
+
+	r, err := rand.Int(rand.Reader, big.NewInt(10))
+	if err != nil {
+		panic("could not generate random number");
+	}
+
+	c, err := Dial(addrs[int(r.Int64())%len(addrs)])
 	if err != nil {
 		return nil, err
 	}
