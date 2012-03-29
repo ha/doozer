@@ -1,6 +1,5 @@
 #!/bin/bash
 set -e
-eval `gomake go-env`
 ./clean.sh
 ./all.sh
 base=`./cmd/doozer/doozer -v|tr ' ' -`

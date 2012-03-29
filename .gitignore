@@ -3,4 +3,4 @@
 _obj
 _test*
 cmd/doozer/doozer
-cmd/doozer/vers.go
+cmd/doozer/version.go
