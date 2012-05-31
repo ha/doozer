@@ -473,3 +473,16 @@ func (c *Conn) Rev() (int64, error) {
 
 	return *t.resp.Rev, nil
 }
+
+// Self returns the node's identifier
+func (c *Conn) Self() ([]byte, error) {
+	var t txn
+	t.req.Verb = request_SELF.Enum()
+
+	err := c.call(&t)
+	if err != nil {
+		return nil, err
+	}
+
+	return t.resp.Value, nil
+}
