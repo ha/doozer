@@ -4,7 +4,7 @@ import (
 	"code.google.com/p/goprotobuf/proto"
 	"encoding/binary"
 	"errors"
-	"github.com/kr/pretty.go"
+	"github.com/kr/pretty"
 
 	"io"
 	"log"
