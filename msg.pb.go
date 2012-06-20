@@ -125,6 +125,7 @@ type request struct {
 
 func (this *request) Reset()         { *this = request{} }
 func (this *request) String() string { return proto.CompactTextString(this) }
+func (this *request) ProtoMessage()  {}
 
 type response struct {
 	Tag              *int32        `protobuf:"varint,1,opt,name=tag" json:"tag,omitempty"`
@@ -140,6 +141,7 @@ type response struct {
 
 func (this *response) Reset()         { *this = response{} }
 func (this *response) String() string { return proto.CompactTextString(this) }
+func (this *response) ProtoMessage()  {}
 
 func init() {
 	proto.RegisterEnum("doozer.request_Verb", request_Verb_name, request_Verb_value)
