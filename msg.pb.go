@@ -79,53 +79,61 @@ func (x *request_Verb) UnmarshalJSON(data []byte) error {
 type response_Err int32
 
 const (
-	response_OTHER        response_Err = 127
-	response_TAG_IN_USE   response_Err = 1
-	response_UNKNOWN_VERB response_Err = 2
-	response_READONLY     response_Err = 3
-	response_TOO_LATE     response_Err = 4
-	response_REV_MISMATCH response_Err = 5
-	response_BAD_PATH     response_Err = 6
-	response_MISSING_ARG  response_Err = 7
-	response_RANGE        response_Err = 8
-	response_NOTDIR       response_Err = 20
-	response_ISDIR        response_Err = 21
-	response_NOENT        response_Err = 22
+	response_OTHER		response_Err	= 127
+	response_TAG_IN_USE	response_Err	= 1
+	response_UNKNOWN_VERB	response_Err	= 2
+	response_READONLY	response_Err	= 3
+	response_TOO_LATE	response_Err	= 4
+	response_REV_MISMATCH	response_Err	= 5
+	response_BAD_PATH	response_Err	= 6
+	response_MISSING_ARG	response_Err	= 7
+	response_RANGE		response_Err	= 8
+	response_NOTDIR		response_Err	= 20
+	response_ISDIR		response_Err	= 21
+	response_NOENT		response_Err	= 22
 )
 
 var response_Err_name = map[int32]string{
-	127: "OTHER",
-	1:   "TAG_IN_USE",
-	2:   "UNKNOWN_VERB",
-	3:   "READONLY",
-	4:   "TOO_LATE",
-	5:   "REV_MISMATCH",
-	6:   "BAD_PATH",
-	7:   "MISSING_ARG",
-	8:   "RANGE",
-	20:  "NOTDIR",
-	21:  "ISDIR",
-	22:  "NOENT",
+	127:	"OTHER",
+	1:	"TAG_IN_USE",
+	2:	"UNKNOWN_VERB",
+	3:	"READONLY",
+	4:	"TOO_LATE",
+	5:	"REV_MISMATCH",
+	6:	"BAD_PATH",
+	7:	"MISSING_ARG",
+	8:	"RANGE",
+	20:	"NOTDIR",
+	21:	"ISDIR",
+	22:	"NOENT",
 }
 var response_Err_value = map[string]int32{
-	"OTHER":        127,
-	"TAG_IN_USE":   1,
-	"UNKNOWN_VERB": 2,
-	"READONLY":     3,
-	"TOO_LATE":     4,
-	"REV_MISMATCH": 5,
-	"BAD_PATH":     6,
-	"MISSING_ARG":  7,
-	"RANGE":        8,
-	"NOTDIR":       20,
-	"ISDIR":        21,
-	"NOENT":        22,
+	"OTHER":	127,
+	"TAG_IN_USE":	1,
+	"UNKNOWN_VERB":	2,
+	"READONLY":	3,
+	"TOO_LATE":	4,
+	"REV_MISMATCH":	5,
+	"BAD_PATH":	6,
+	"MISSING_ARG":	7,
+	"RANGE":	8,
+	"NOTDIR":	20,
+	"ISDIR":	21,
+	"NOENT":	22,
 }
 
 func (x response_Err) Enum() *response_Err {
 	p := new(response_Err)
 	*p = x
 	return p
+}
+func (x response_Err) Enum() *response_Err {
+	p := new(response_Err)
+	*p = x
+	return p
+}
+func (x response_Err) String() string {
+	return proto.EnumName(response_Err_name, int32(x))
 }
 func (x response_Err) Error() string {
 	return x.String()

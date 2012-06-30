@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/ha/doozer"
+	"github.com/4ad/doozer"
 	"os"
 	"reflect"
 	"sort"
@@ -11,17 +11,17 @@ import (
 )
 
 var (
-	uri         = flag.String("a", "doozer:?ca=127.0.0.1:8046", "the address to bind to")
-	buri        = flag.String("b", "", "the DzNS uri")
-	rrev        = flag.Int64("r", -1, "request rev")
-	showHelp    = flag.Bool("h", false, "show help")
-	showVersion = flag.Bool("v", false, "print version string")
+	uri		= flag.String("a", "doozer:?ca=127.0.0.1:8046", "the address to bind to")
+	buri		= flag.String("b", "", "the DzNS uri")
+	rrev		= flag.Int64("r", -1, "request rev")
+	showHelp	= flag.Bool("h", false, "show help")
+	showVersion	= flag.Bool("v", false, "print version string")
 )
 
 type cmd struct {
-	f interface{}
-	a string // args
-	d string // short description
+	f	interface{}
+	a	string	// args
+	d	string	// short description
 }
 
 var (
@@ -31,14 +31,14 @@ var (
 )
 
 const (
-	usage1 = `
+	usage1	= `
 Each command takes zero or more options and zero or more arguments.
 In addition, there are some global options that can be used with any command.
 The exit status is 0 on success, 1 for a rev mismatch, and 2 otherwise.
 
 Global Options:
 `
-	usage2 = `Environment:
+	usage2	= `Environment:
 
   DOOZER_URI - The doozer cluster to bind to; overriden by -a.
 
