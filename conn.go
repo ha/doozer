@@ -290,7 +290,7 @@ func (c *Conn) Set(file string, oldRev int64, body []byte) (newRev int64, err er
 		return
 	}
 
-	return proto.GetInt64(t.resp.Rev), nil
+	return *t.resp.Rev, nil
 }
 
 // Deletes file, if it hasn't been modified since rev.
@@ -322,7 +322,7 @@ func (c *Conn) Get(file string, rev *int64) ([]byte, int64, error) {
 		return nil, 0, err
 	}
 
-	return t.resp.Value, proto.GetInt64(t.resp.Rev), nil
+	return t.resp.Value, *t.resp.Rev, nil
 }
 
 // Getdir reads up to lim names from dir, at revision rev, into an array.
@@ -408,7 +408,7 @@ func (c *Conn) Stat(path string, storeRev *int64) (len int, fileRev int64, err e
 		return 0, 0, err
 	}
 
-	return int(proto.GetInt32(t.resp.Len)), proto.GetInt64(t.resp.Rev), nil
+	return int(*t.resp.Len), *t.resp.Rev, nil
 }
 
 // Walk reads up to lim entries matching glob, in revision rev, into an array.

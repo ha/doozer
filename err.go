@@ -1,7 +1,6 @@
 package doozer
 
 import (
-	"code.google.com/p/goprotobuf/proto"
 	"errors"
 )
 
@@ -27,11 +26,19 @@ type Error struct {
 	Detail string
 }
 
-func newError(t *txn) *Error {
-	return &Error{
-		Err:    *t.resp.ErrCode,
-		Detail: proto.GetString(t.resp.ErrDetail),
+func newError(t *txn) (err *Error) {
+	if t.resp.ErrDetail != nil {
+		err = &Error{
+			Err:    *t.resp.ErrCode,
+			Detail: *t.resp.ErrDetail,
+		}
+	} else {
+		err = &Error{
+			Err: *t.resp.ErrCode,
+		}
 	}
+
+	return
 }
 
 func (e *Error) Error() (s string) {

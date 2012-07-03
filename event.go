@@ -14,11 +14,9 @@ type Event struct {
 	Flag int32
 }
 
-
 func (e Event) IsSet() bool {
 	return e.Flag&set > 0
 }
-
 
 func (e Event) IsDel() bool {
 	return e.Flag&del > 0
