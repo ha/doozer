@@ -6,7 +6,7 @@ package doozer
 import proto "code.google.com/p/goprotobuf/proto"
 import "math"
 
-// Reference proto & math imports to suppress error if they are not otherwise used.
+// Reference proto and math imports to suppress error if they are not otherwise used.
 var _ = proto.GetString
 var _ = math.Inf
 
@@ -50,11 +50,17 @@ var request_Verb_value = map[string]int32{
 	"ACCESS": 99,
 }
 
+// newRequest_Verb is deprecated. Use x.Enum() instead.
 func newRequest_Verb(x request_Verb) *request_Verb {
 	e := request_Verb(x)
 	return &e
 }
-func (x request_Verb) Error() string {
+func (x request_Verb) Enum() *request_Verb {
+	p := new(request_Verb)
+	*p = x
+	return p
+}
+func (x request_Verb) String() string {
 	return proto.EnumName(request_Verb_name, int32(x))
 }
 
@@ -104,9 +110,18 @@ var response_Err_value = map[string]int32{
 	"NOENT":        22,
 }
 
+// newResponse_Err is deprecated. Use x.Enum() instead.
 func newResponse_Err(x response_Err) *response_Err {
 	e := response_Err(x)
 	return &e
+}
+func (x response_Err) Enum() *response_Err {
+	p := new(response_Err)
+	*p = x
+	return p
+}
+func (x response_Err) String() string {
+	return proto.EnumName(response_Err_name, int32(x))
 }
 func (x response_Err) Error() string {
 	return proto.EnumName(response_Err_name, int32(x))
@@ -120,11 +135,61 @@ type request struct {
 	OtherTag         *int32        `protobuf:"varint,6,opt,name=other_tag" json:"other_tag,omitempty"`
 	Offset           *int32        `protobuf:"varint,7,opt,name=offset" json:"offset,omitempty"`
 	Rev              *int64        `protobuf:"varint,9,opt,name=rev" json:"rev,omitempty"`
-	XXX_unrecognized []byte        `json:",omitempty"`
+	XXX_unrecognized []byte        `json:"-"`
 }
 
 func (this *request) Reset()         { *this = request{} }
 func (this *request) String() string { return proto.CompactTextString(this) }
+func (*request) ProtoMessage()       {}
+
+func (this *request) GetTag() int32 {
+	if this != nil && this.Tag != nil {
+		return *this.Tag
+	}
+	return 0
+}
+
+func (this *request) GetVerb() request_Verb {
+	if this != nil && this.Verb != nil {
+		return *this.Verb
+	}
+	return 0
+}
+
+func (this *request) GetPath() string {
+	if this != nil && this.Path != nil {
+		return *this.Path
+	}
+	return ""
+}
+
+func (this *request) GetValue() []byte {
+	if this != nil {
+		return this.Value
+	}
+	return nil
+}
+
+func (this *request) GetOtherTag() int32 {
+	if this != nil && this.OtherTag != nil {
+		return *this.OtherTag
+	}
+	return 0
+}
+
+func (this *request) GetOffset() int32 {
+	if this != nil && this.Offset != nil {
+		return *this.Offset
+	}
+	return 0
+}
+
+func (this *request) GetRev() int64 {
+	if this != nil && this.Rev != nil {
+		return *this.Rev
+	}
+	return 0
+}
 
 type response struct {
 	Tag              *int32        `protobuf:"varint,1,opt,name=tag" json:"tag,omitempty"`
@@ -135,11 +200,68 @@ type response struct {
 	Len              *int32        `protobuf:"varint,8,opt,name=len" json:"len,omitempty"`
 	ErrCode          *response_Err `protobuf:"varint,100,opt,name=err_code,enum=doozer.response_Err" json:"err_code,omitempty"`
 	ErrDetail        *string       `protobuf:"bytes,101,opt,name=err_detail" json:"err_detail,omitempty"`
-	XXX_unrecognized []byte        `json:",omitempty"`
+	XXX_unrecognized []byte        `json:"-"`
 }
 
 func (this *response) Reset()         { *this = response{} }
 func (this *response) String() string { return proto.CompactTextString(this) }
+func (*response) ProtoMessage()       {}
+
+func (this *response) GetTag() int32 {
+	if this != nil && this.Tag != nil {
+		return *this.Tag
+	}
+	return 0
+}
+
+func (this *response) GetFlags() int32 {
+	if this != nil && this.Flags != nil {
+		return *this.Flags
+	}
+	return 0
+}
+
+func (this *response) GetRev() int64 {
+	if this != nil && this.Rev != nil {
+		return *this.Rev
+	}
+	return 0
+}
+
+func (this *response) GetPath() string {
+	if this != nil && this.Path != nil {
+		return *this.Path
+	}
+	return ""
+}
+
+func (this *response) GetValue() []byte {
+	if this != nil {
+		return this.Value
+	}
+	return nil
+}
+
+func (this *response) GetLen() int32 {
+	if this != nil && this.Len != nil {
+		return *this.Len
+	}
+	return 0
+}
+
+func (this *response) GetErrCode() response_Err {
+	if this != nil && this.ErrCode != nil {
+		return *this.ErrCode
+	}
+	return 0
+}
+
+func (this *response) GetErrDetail() string {
+	if this != nil && this.ErrDetail != nil {
+		return *this.ErrDetail
+	}
+	return ""
+}
 
 func init() {
 	proto.RegisterEnum("doozer.request_Verb", request_Verb_name, request_Verb_value)

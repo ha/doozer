@@ -7,13 +7,7 @@ This is the Go client driver for doozer.
 
 To install the Go client:
 
-    $ goinstall github.com/ha/doozer
-
-To install the CLI client:
-
-    $ cd $GOROOT/src/pkg/github.com/ha/doozer/cmd
-    $ make
-    $ make install
+    $ go get github.com/4ad/doozer/cmd/doozer
 
 To use:
 

@@ -1,3 +1,0 @@
-CMDS="
-    doozer
-"
