@@ -8,7 +8,6 @@ No change will be made to the data store.
 `
 }
 
-
 func nop() {
 	c := dial()
 
