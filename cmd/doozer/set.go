@@ -6,7 +6,6 @@ import (
 	"os"
 )
 
-
 func init() {
 	cmds["set"] = cmd{set, "<path> <rev>", "write a file"}
 	cmdHelp["set"] = `Sets the body of the file at <path>.
@@ -17,7 +16,6 @@ the revision of the file, no change will be made.
 Prints the new revision on stdout, or an error message on stderr.
 `
 }
-
 
 func set(path, rev string) {
 	oldRev := mustAtoi64(rev)
