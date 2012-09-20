@@ -8,12 +8,11 @@ GOFILES=\
 	msg.pb.go\
 	walk.go\
 
-build: $(GOFILES)
-	cd cmd/doozer && make && cd -
-	go build ./...
+build:
+	go build ./cmd/doozer
 
-install: build
-	go install ./...
+install:
+	go install ./cmd/doozer
 
 msg.pb.go: msg.proto
 	mkdir -p _pb
