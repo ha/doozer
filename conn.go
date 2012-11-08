@@ -272,7 +272,7 @@ func (c *Conn) write(buf []byte) error {
 // Attempts access to the store
 func (c *Conn) Access(token string) error {
 	var t txn
-	t.req.Verb = newRequest_Verb(request_ACCESS)
+	t.req.Verb = request_ACCESS.Enum()
 	t.req.Value = []byte(token)
 	return c.call(&t)
 }
@@ -280,7 +280,7 @@ func (c *Conn) Access(token string) error {
 // Sets the contents of file to body, if it hasn't been modified since oldRev.
 func (c *Conn) Set(file string, oldRev int64, body []byte) (newRev int64, err error) {
 	var t txn
-	t.req.Verb = newRequest_Verb(request_SET)
+	t.req.Verb = request_SET.Enum()
 	t.req.Path = &file
 	t.req.Value = body
 	t.req.Rev = &oldRev
@@ -296,7 +296,7 @@ func (c *Conn) Set(file string, oldRev int64, body []byte) (newRev int64, err er
 // Deletes file, if it hasn't been modified since rev.
 func (c *Conn) Del(file string, rev int64) error {
 	var t txn
-	t.req.Verb = newRequest_Verb(request_DEL)
+	t.req.Verb = request_DEL.Enum()
 	t.req.Path = &file
 	t.req.Rev = &rev
 	return c.call(&t)
@@ -304,7 +304,7 @@ func (c *Conn) Del(file string, rev int64) error {
 
 func (c *Conn) Nop() error {
 	var t txn
-	t.req.Verb = newRequest_Verb(request_NOP)
+	t.req.Verb = request_NOP.Enum()
 	return c.call(&t)
 }
 
@@ -313,7 +313,7 @@ func (c *Conn) Nop() error {
 // If rev is nil, uses the current state.
 func (c *Conn) Get(file string, rev *int64) ([]byte, int64, error) {
 	var t txn
-	t.req.Verb = newRequest_Verb(request_GET)
+	t.req.Verb = request_GET.Enum()
 	t.req.Path = &file
 	t.req.Rev = rev
 
@@ -331,7 +331,7 @@ func (c *Conn) Get(file string, rev *int64) ([]byte, int64, error) {
 func (c *Conn) Getdir(dir string, rev int64, off, lim int) (names []string, err error) {
 	for lim != 0 {
 		var t txn
-		t.req.Verb = newRequest_Verb(request_GETDIR)
+		t.req.Verb = request_GETDIR.Enum()
 		t.req.Rev = &rev
 		t.req.Path = &dir
 		t.req.Offset = proto.Int32(int32(off))
@@ -399,7 +399,7 @@ func (c *Conn) Statinfo(rev int64, path string) (f *FileInfo, err error) {
 // revision.
 func (c *Conn) Stat(path string, storeRev *int64) (len int, fileRev int64, err error) {
 	var t txn
-	t.req.Verb = newRequest_Verb(request_STAT)
+	t.req.Verb = request_STAT.Enum()
 	t.req.Path = &path
 	t.req.Rev = storeRev
 
@@ -418,7 +418,7 @@ func (c *Conn) Stat(path string, storeRev *int64) (len int, fileRev int64, err e
 func (c *Conn) Walk(glob string, rev int64, off, lim int) (info []Event, err error) {
 	for lim != 0 {
 		var t txn
-		t.req.Verb = newRequest_Verb(request_WALK)
+		t.req.Verb = request_WALK.Enum()
 		t.req.Rev = &rev
 		t.req.Path = &glob
 		t.req.Offset = proto.Int32(int32(off))
@@ -444,7 +444,7 @@ func (c *Conn) Walk(glob string, rev int64, off, lim int) (info []Event, err err
 // Waits for the first change, on or after rev, to any file matching glob.
 func (c *Conn) Wait(glob string, rev int64) (ev Event, err error) {
 	var t txn
-	t.req.Verb = newRequest_Verb(request_WAIT)
+	t.req.Verb = request_WAIT.Enum()
 	t.req.Path = &glob
 	t.req.Rev = &rev
 
@@ -463,7 +463,7 @@ func (c *Conn) Wait(glob string, rev int64) (ev Event, err error) {
 // Rev returns the current revision of the store.
 func (c *Conn) Rev() (int64, error) {
 	var t txn
-	t.req.Verb = newRequest_Verb(request_REV)
+	t.req.Verb = request_REV.Enum()
 
 	err := c.call(&t)
 	if err != nil {
