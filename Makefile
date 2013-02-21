@@ -1,6 +1,5 @@
-include Make.inc
 
-TARG=github.com/ha/doozer
+TARG=github.com/soundcloud/doozer
 GOFILES=\
 	conn.go\
 	err.go\
@@ -9,7 +8,12 @@ GOFILES=\
 	msg.pb.go\
 	walk.go\
 
-include $(GOROOT)/src/Make.pkg
+build:
+	make -C ./cmd/doozer
+	go build ./cmd/doozer
+
+install:
+	go install ./cmd/doozer
 
 msg.pb.go: msg.proto
 	mkdir -p _pb
