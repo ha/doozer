@@ -9,6 +9,7 @@ GOFILES=\
 	walk.go\
 
 build:
+	make -C ./cmd/doozer
 	go build ./cmd/doozer
 
 install:
