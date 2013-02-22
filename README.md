@@ -1,6 +1,6 @@
 # Doozer Client
 
-**Note:** [doozerd](/ha/doozerd) is the server.
+**Note:** [doozerd](https://github.com/ha/doozerd) is the server.
 This is the Go client driver for doozer.
 
 ## How to use
