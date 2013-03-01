@@ -9,7 +9,6 @@ no change will be made.
 `
 }
 
-
 func del(path, rev string) {
 	oldRev := mustAtoi64(rev)
 

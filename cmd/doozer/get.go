@@ -4,12 +4,10 @@ import (
 	"os"
 )
 
-
 func init() {
 	cmds["get"] = cmd{get, "<path>", "read a file"}
 	cmdHelp["get"] = "Prints the body of the file at <path>.\n"
 }
-
 
 func get(path string) {
 	c := dial()

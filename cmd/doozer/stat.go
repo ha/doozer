@@ -5,7 +5,6 @@ import (
 	"os"
 )
 
-
 func init() {
 	cmds["stat"] = cmd{stat, "<path>", "print file status"}
 	cmdHelp["stat"] = `Print the status for each <path>.
@@ -14,7 +13,6 @@ If path is a directory, prints "d" and the number of entries.
 Otherwise, prints its revision and length.
 `
 }
-
 
 func stat(path string) {
 	c := dial()
