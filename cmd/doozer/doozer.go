@@ -25,9 +25,9 @@ type cmd struct {
 }
 
 var (
-	self    = os.Args[0]
-	cmds    = map[string]cmd{}
-	cmdHelp = map[string]string{}
+	selfName = os.Args[0]
+	cmds     = map[string]cmd{}
+	cmdHelp  = map[string]string{}
 )
 
 const (
@@ -49,7 +49,7 @@ Commands:
 )
 
 func usage() {
-	fmt.Fprintf(os.Stderr, "Use: %s [options] <command> [options] [args]\n", self)
+	fmt.Fprintf(os.Stderr, "Use: %s [options] <command> [options] [args]\n", selfName)
 	fmt.Fprint(os.Stderr, usage1)
 	flag.PrintDefaults()
 	fmt.Fprintln(os.Stderr)
