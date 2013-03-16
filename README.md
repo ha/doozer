@@ -11,7 +11,7 @@ To install the Go client:
 
 To install the CLI client:
 
-    $ go get github.com/ha/doozer/cmd
+    $ go get github.com/ha/doozer/cmd/doozer
 
 To use:
 
