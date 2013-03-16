@@ -32,9 +32,9 @@ var (
 
 const (
 	usage1 = `
-Each command takes zero or more options and zero or more arguments.
-In addition, there are some global options that can be used with any command.
-The exit status is 0 on success, 1 for a rev mismatch, and 2 otherwise.
+Each command takes zero or more arguments. In addition, there are some global
+options that can be used with any command. The exit status is 0 on success,
+1 for a rev mismatch, and 2 otherwise.
 
 Global Options:
 `
@@ -49,7 +49,7 @@ Commands:
 )
 
 func usage() {
-	fmt.Fprintf(os.Stderr, "Use: %s [options] <command> [options] [args]\n", selfName)
+	fmt.Fprintf(os.Stderr, "Use: %s [options] <command> [args]\n", selfName)
 	fmt.Fprint(os.Stderr, usage1)
 	flag.PrintDefaults()
 	fmt.Fprintln(os.Stderr)
