@@ -5,8 +5,8 @@ import (
 )
 
 func init() {
-	cmds["rev"] = cmd{rev, "<path>", "read a file"}
-	cmdHelp["rev"] = "Prints the current revision.\n"
+	cmds["rev"] = cmd{rev, "", "show current revision"}
+	cmdHelp["rev"] = "Prints the current revision of the store.\n"
 }
 
 func rev() {
