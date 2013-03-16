@@ -5,6 +5,7 @@ import (
 	"encoding/binary"
 	"errors"
 	"github.com/kr/pretty"
+	"time"
 
 	"io"
 	"log"
@@ -37,6 +38,10 @@ type Conn struct {
 	err     error
 	stop    chan bool
 	stopped chan bool
+}
+
+func init() {
+	rand.Seed(time.Now().UnixNano())
 }
 
 // Dial connects to a single doozer server.
