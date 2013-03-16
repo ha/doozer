@@ -8,6 +8,6 @@ func init() {
 
 func help(command string) {
 	c := cmds[command]
-	fmt.Printf("Use: %s [options] %s [options] %s\n\n", self, command, c.a)
+	fmt.Printf("Use: %s [options] %s %s\n\n", self, command, c.a)
 	fmt.Print(cmdHelp[command])
 }
