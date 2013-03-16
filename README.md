@@ -36,10 +36,7 @@ To use:
 ## License and Authors
 
 Doozer is distributed under the terms of the MIT
-License. See [LICENSE][] for details.
+License. See [LICENSE](LICENSE) for details.
 
 Doozer was created by Blake Mizerany and Keith Rarick.
 Type `git shortlog -s` for a full list of contributors.
-
-[mail]: https://groups.google.com/group/doozer
-[LICENSE]: /ha/doozer/blob/master/LICENSE
