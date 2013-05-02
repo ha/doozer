@@ -11,7 +11,7 @@ To install the Go client:
 
 To install the CLI client:
 
-    $ go get github.com/ha/doozer/cmd/doozer
+    $ go get github.com/ha/doozer/src/util/doozer
 
 To use:
 
@@ -32,6 +32,13 @@ To use:
     	myfile, _, _ := doozer.Get("/myfile", nil)
     	os.Stdout.Write(myfile)
     }
+
+
+## Hacking
+
+Building doozer utility from git:
+
+    $ make
 
 ## License and Authors
 
