@@ -1,3 +1,6 @@
+all:
+	GOPATH=$(PWD) go build util/doozer
+
 msg.pb.go: msg.proto
 	mkdir -p _pb
 	protoc --go_out=_pb $<
