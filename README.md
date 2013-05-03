@@ -33,6 +33,22 @@ To use:
     	os.Stdout.Write(myfile)
     }
 
+## Hacking
+
+You can create a workspace for hacking on the doozer library and command
+by doing the following:
+
+    $ mkdir doozer
+    $ cd doozer
+    $ export GOPATH=`pwd`
+    $ go get github.com/ha/doozer/...
+
+    # ...hack...hack..hack...
+    $ vim src/github.com/ha/doozer/cmd/doozer/help.go
+
+    # rebuild ./bin/doozer
+    $ go install github.com/ha/doozer/...
+
 ## License and Authors
 
 Doozer is distributed under the terms of the MIT
