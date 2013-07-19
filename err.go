@@ -5,9 +5,10 @@ import (
 )
 
 var (
-	ErrNoAddrs = errors.New("no known address")
-	ErrBadTag  = errors.New("bad tag")
-	ErrClosed  = errors.New("closed")
+	ErrNoAddrs     = errors.New("no known address")
+	ErrBadTag      = errors.New("bad tag")
+	ErrClosed      = errors.New("closed")
+	ErrWaitTimeout = errors.New("wait timeout")
 )
 
 var (
