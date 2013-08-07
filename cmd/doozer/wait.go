@@ -1,15 +1,22 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 )
 
+var timeout = flag.Duration("t", 0, "wait timeout")
+
 func init() {
+	flag.Parse()
 	cmds["wait"] = cmd{wait, "<glob>", "wait for a change"}
 	cmdHelp["wait"] = `Prints the next change to a file matching <glob>.
 
 If flag -r is given, prints the next change on or after <rev>.
+if flag -t is given, the wait will timeout after the specified
+	duration (i.e. -t 1m30s will wait 1 minute and 30 seconds,
+	valid time units: "ns", "us" (or "µs"), "ms", "s", "m", "h").
 
 Rules for <glob> pattern-matching:
  - '?' matches a single char in a single path component
@@ -37,7 +44,7 @@ func wait(path string) {
 		}
 	}
 
-	ev, err := c.Wait(path, *rrev)
+	ev, err := c.WaitTimeout(path, *rrev, *timeout)
 	if err != nil {
 		bail(err)
 	}

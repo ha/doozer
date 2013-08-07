@@ -170,12 +170,16 @@ func (c *Conn) call(t *txn) error {
 	case <-c.stopped:
 		return c.err
 	case c.send <- t:
-		<-t.done
-		if t.err != nil {
-			return t.err
-		}
-		if t.resp.ErrCode != nil {
-			return newError(t)
+		select {
+		case <-c.stopped:
+			return c.err
+		case <-t.done:
+			if t.err != nil {
+				return t.err
+			}
+			if t.resp.ErrCode != nil {
+				return newError(t)
+			}
 		}
 	}
 	return nil
@@ -485,6 +489,23 @@ func (c *Conn) Wait(glob string, rev int64) (ev Event, err error) {
 	ev.Path = *t.resp.Path
 	ev.Body = t.resp.Value
 	ev.Flag = *t.resp.Flags & (set | del)
+	return
+}
+
+// Waits for the first change, on or after rev, to any file matching glob,
+// within the specific time expressed as time.Duration
+func (c *Conn) WaitTimeout(glob string, rev int64, timeout time.Duration) (ev Event, err error) {
+	var timer *time.Timer
+	if timeout > 0 {
+		timer = time.AfterFunc(timeout, func() {
+			c.err = ErrWaitTimeout
+			c.stopped <- true
+		})
+	}
+	ev, err = c.Wait(glob, rev)
+	if timer != nil {
+		timer.Stop()
+	}
 	return
 }
 
