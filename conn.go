@@ -46,10 +46,23 @@ func init() {
 
 // Dial connects to a single doozer server.
 func Dial(addr string) (*Conn, error) {
+	return dial(addr, -1)
+}
+
+// DialTimeout acts like Dial but takes a timeout.
+func DialTimeout(addr string, timeout time.Duration) (*Conn, error) {
+	return dial(addr, timeout)
+}
+
+func dial(addr string, timeout time.Duration) (*Conn, error) {
 	var c Conn
 	var err error
 	c.addr = addr
-	c.conn, err = net.Dial("tcp", addr)
+	if timeout > 0 {
+		c.conn, err = net.DialTimeout("tcp", addr, timeout)
+	} else {
+		c.conn, err = net.Dial("tcp", addr)
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -68,6 +81,15 @@ func Dial(addr string) (*Conn, error) {
 // contains a cluster name, it will lookup addrs to try in `buri`.  If `uri`
 // contains a  secret key, then DialUri will call `Access` with the secret.
 func DialUri(uri, buri string) (*Conn, error) {
+	return dialUri(uri, buri, -1)
+}
+
+// DialUriTimeout acts like DialUri but takes a timeout.
+func DialUriTimeout(uri, buri string, timeout time.Duration) (*Conn, error) {
+	return dialUri(uri, buri, -1)
+}
+
+func dialUri(uri, buri string, timeout time.Duration) (*Conn, error) {
 	if !strings.HasPrefix(uri, uriPrefix) {
 		return nil, ErrInvalidUri
 	}
@@ -99,7 +121,7 @@ func DialUri(uri, buri string) (*Conn, error) {
 		}
 	}
 
-	c, err := Dial(addrs[rand.Int()%len(addrs)])
+	c, err := dial(addrs[rand.Int()%len(addrs)], timeout)
 	if err != nil {
 		return nil, err
 	}
