@@ -1,24 +1,24 @@
 # Doozer Client
 
-**Note:** [doozerd](https://github.com/ha/doozerd) is the server.
+**Note:** [doozerd](https://github.com/4ad/doozerd) is the server.
 This is the Go client driver for doozer.
 
 ## How to use
 
 To install the Go client:
 
-    $ go get github.com/ha/doozer
+    $ go get github.com/4ad/doozer
 
 To install the CLI client:
 
-    $ go get github.com/ha/doozer/cmd/doozer
+    $ go get github.com/4ad/doozer/cmd/doozer
 
 To use:
 
     package main
 
     import (
-    	"github.com/ha/doozer"
+    	"github.com/4ad/doozer"
     	"os"
     )
 
@@ -41,13 +41,13 @@ by doing the following:
     $ mkdir doozer
     $ cd doozer
     $ export GOPATH=`pwd`
-    $ go get github.com/ha/doozer/...
+    $ go get github.com/4ad/doozer/...
 
     # ...hack...hack..hack...
-    $ vim src/github.com/ha/doozer/cmd/doozer/help.go
+    $ vim src/github.com/4ad/doozer/cmd/doozer/help.go
 
     # rebuild ./bin/doozer
-    $ go install github.com/ha/doozer/...
+    $ go install github.com/4ad/doozer/...
 
 ## License and Authors
 

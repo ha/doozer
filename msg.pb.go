@@ -127,9 +127,6 @@ func (x response_Err) Enum() *response_Err {
 	*p = x
 	return p
 }
-func (x response_Err) Error() string {
-	return x.String()
-}
 func (x response_Err) String() string {
 	return proto.EnumName(response_Err_name, int32(x))
 }

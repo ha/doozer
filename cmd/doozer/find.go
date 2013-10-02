@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/ha/doozer"
+	"github.com/4ad/doozer"
 	"os"
 )
 
