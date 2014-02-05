@@ -146,7 +146,7 @@ func lookup(b *Conn, name string) (as []string, err error) {
 	}
 
 	path := "/ctl/ns/" + name
-	names, err := b.Getdir(path, rev, 0, -1)
+	names, err := b.Getdir(path, &rev, 0, -1)
 	if err, ok := err.(*Error); ok && err.Err == ErrNoEnt {
 		return nil, nil
 	} else if err != nil {
@@ -360,11 +360,12 @@ func (c *Conn) Get(file string, rev *int64) ([]byte, int64, error) {
 // Getdir reads up to lim names from dir, at revision rev, into an array.
 // Names are read in lexicographical order, starting at position off.
 // A negative lim means to read until the end.
-func (c *Conn) Getdir(dir string, rev int64, off, lim int) (names []string, err error) {
+// If rev is nil, uses the current state.
+func (c *Conn) Getdir(dir string, rev *int64, off, lim int) (names []string, err error) {
 	for lim != 0 {
 		var t txn
 		t.req.Verb = request_GETDIR.Enum()
-		t.req.Rev = &rev
+		t.req.Rev = rev
 		t.req.Path = &dir
 		t.req.Offset = proto.Int32(int32(off))
 		err = c.call(&t)
@@ -387,7 +388,7 @@ func (c *Conn) Getdir(dir string, rev int64, off, lim int) (names []string, err 
 // A negative lim means to read until the end.
 // Getdirinfo returns the array and an error, if any.
 func (c *Conn) Getdirinfo(dir string, rev int64, off, lim int) (a []FileInfo, err error) {
-	names, err := c.Getdir(dir, rev, off, lim)
+	names, err := c.Getdir(dir, &rev, off, lim)
 	if err != nil {
 		return nil, err
 	}
