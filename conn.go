@@ -1,7 +1,7 @@
 package doozer
 
 import (
-	"github.com/golang/protobuf/proto"
+	"github.org/golang/protobuf/proto"
 	"encoding/binary"
 	"errors"
 	"github.com/kr/pretty"

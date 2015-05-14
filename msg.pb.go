@@ -4,7 +4,7 @@
 
 package doozer
 
-import proto "github.com/golang/protobuf/proto"
+import proto "github.org/golang/protobuf/proto"
 import json "encoding/json"
 import math "math"
 
