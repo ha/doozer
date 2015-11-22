@@ -1,9 +1,9 @@
 package doozer
 
 import (
-	"code.google.com/p/goprotobuf/proto"
 	"encoding/binary"
 	"errors"
+	"github.com/golang/protobuf/proto"
 	"github.com/kr/pretty"
 	"time"
 
